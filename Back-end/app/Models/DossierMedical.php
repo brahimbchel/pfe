@@ -11,7 +11,7 @@ class DossierMedical extends Model
 
     protected $fillable = [
         'employe_id',
-        'nom',
+        'aptitudeDeTravail',
         'description',
     ];
 
