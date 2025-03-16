@@ -22,9 +22,11 @@ class StoreVisiteRequest extends FormRequest
     public function rules()
     {
         return [
-            'employe_id' => 'required|exists:employes,id',
-            'aptitudeDeTravail' => 'required|in:apte,inapteTemporaire,inapteDefinitif',
-            'description' => 'nullable|string',
+            'dateVisite' => 'required|date',
+            'MedecinId' => 'required|exists:medecins,id',
+            'EmployeId' => 'required|exists:employes,id',
+            'type' => 'required|string|max:255',
+            'cms_id' => 'required|exists:cms,id',
         ];
     }
 }

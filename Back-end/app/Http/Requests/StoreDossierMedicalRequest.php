@@ -20,15 +20,13 @@ class StoreDossierMedicalRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     
-    public function rules()
-    {
-        return [
-            'dateVisite' => 'required|date',
-            'MedecinId' => 'required|exists:medecins,id',
-            'EmployeId' => 'required|exists:employes,id',
-            'type' => 'required|string|max:255',
-            'cms_id' => 'nullable|exists:cms,id',
-            'conclusionMedicale' => 'nullable|string',
-        ];
-    }
+     public function rules()
+     {
+         return [
+             'employe_id' => 'required|exists:employes,id',
+             'aptitudeDeTravail' => 'required|in:apte,inapteTemporaire,inapteDefinitif',
+             'description' => 'nullable|string',
+         ];
+     }
+    
 }
