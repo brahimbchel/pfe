@@ -1,7 +1,7 @@
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div>Welcom to PFE this is Home Page</div>
   )
 }
 
