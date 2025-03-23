@@ -29,7 +29,7 @@ class StoreUtilisateurRequest extends FormRequest
             'motDePasse' => 'required|string|min:8',
             'dateNaissance' => 'required|date',
             'lieuNaissance' => 'required|string|max:255',
-            'wilayaNaissance' => 'required|string|max:255',
+            'wilayaNaissance' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
             'adresse' => 'required|string|max:255',
             'sexe' => 'required|in:masculin,féminin',
             'nationalite' => 'required|string|max:255',

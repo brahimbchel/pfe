@@ -16,8 +16,8 @@ class CreateEmployesTable extends Migration
         $table->string('poste');
         $table->string('departement');
         $table->string('situationFamille');
-        $table->enum('groupeSanguin', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
-        $table->string('rh');
+        $table->enum('groupeSanguin', ['A', 'B', 'AB', 'O']);
+        $table->enum('rh', ['+','-']);
         $table->string('formationScolaire');
         $table->string('formationProfessionnelle');
         $table->string('qualificationProfessionnelle');

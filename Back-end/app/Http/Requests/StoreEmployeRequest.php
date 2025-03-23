@@ -11,7 +11,7 @@ class StoreEmployeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,10 +24,10 @@ class StoreEmployeRequest extends FormRequest
         return [
             'utilisateur_id' => 'required|exists:utilisateurs,id',
             'matricule' => 'required|unique:employes',
-            'fonction' => 'required|string|max:25',
+            'fonction' => 'nullable|string|max:25',
             'poste' => 'required|string|max:25',
             'departement' => 'required|string|max:20',
-            'situationFamille' => 'required|string|max:10',
+            'situationFamille' => 'required|in: célibataire, marié, séparé, veuf ou divorcé',
             'groupeSanguin' => 'required|in:A,B,AB,O',
             'rh' => 'required|in:+,-',
             'formationScolaire' => 'nullable|string|max:255',
