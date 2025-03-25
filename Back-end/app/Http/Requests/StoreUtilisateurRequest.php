@@ -25,7 +25,7 @@ class StoreUtilisateurRequest extends FormRequest
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:utilisateurs,email',
-            'numTelephone' => 'required|regex:/^[0-9]{10}$/',
+            'numTelephone' => 'required|unique:utilisateurs,numTelephone|regex:/^[0-9]{10}$/',
             'motDePasse' => 'required|string|min:8',
             'dateNaissance' => 'required|date',
             'lieuNaissance' => 'required|string|max:255',

@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('type_specialites', function (Blueprint $table) {
             $table->id();
-            $table->string('nomTypeSpecialite');
+            $table->string('NomSpecialite')->unique(); // Nom de la spécialité, clé unique
             $table->timestamps();
         });
     }
+
     public function down(): void
     {
         Schema::dropIfExists('type_specialites');

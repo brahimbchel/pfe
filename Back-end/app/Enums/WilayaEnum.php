@@ -63,6 +63,7 @@ final class WilayaEnum
     const DJANET = 'Djanet';
     const EL_MGHAIR = "El M'Ghair";
     const EL_MENIAA = 'El Meniaa';
+    const AUTRE = 'Autre';
 
     public static function getAllWilayas()
     {
@@ -125,6 +126,7 @@ final class WilayaEnum
             self::DJANET,
             self::EL_MGHAIR,
             self::EL_MENIAA,
+            self::AUTRE,
         ];
     }
 }

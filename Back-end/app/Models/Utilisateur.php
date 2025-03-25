@@ -25,7 +25,7 @@ class Utilisateur extends Model
         'nationalite',
     ];
 
-     // Méthode d'attribut pour valider la wilaya
+     // Méthode pour valider la wilaya
      public function setWilayaNaissanceAttribute($value)
      {
          if (!in_array($value, WilayaEnum::getAllWilayas())) {

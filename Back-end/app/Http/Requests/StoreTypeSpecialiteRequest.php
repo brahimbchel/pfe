@@ -22,7 +22,7 @@ class StoreTypeSpecialiteRequest extends FormRequest
     public function rules()
     {
         return [
-            'nomTypeSpecialite' => 'required|string|max:255',
+            'nomTypeSpecialite' => 'required|string|unique:type_specialites,nomTypeSpecialite',
         ];
     }
 }

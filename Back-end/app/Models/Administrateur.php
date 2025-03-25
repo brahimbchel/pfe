@@ -12,4 +12,9 @@ class Administrateur extends utilisateur
     protected $fillable = [
         'utilisateur_id',
     ];
+
+    public function utilisateur()
+    {
+        return $this->belongsTo(Utilisateur::class);
+    }
 }

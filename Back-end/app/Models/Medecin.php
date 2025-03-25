@@ -12,11 +12,17 @@ class Medecin extends Utilisateur
     protected $fillable = [
         'typeSpecialite_id',
         'adresseService',
+        'utilisateur_id',
     ];
 
+    public function utilisateur()
+    {
+        return $this->belongsTo(Utilisateur::class, 'utilisateur_id');
+    }
+    
     public function typeSpecialite()
     {
-        return $this->belongsTo(TypeSpecialite::class);
+        return $this->belongsTo(TypeSpecialite::class, 'typeSpecialite_id');
     }
 
     public function disponibilites()

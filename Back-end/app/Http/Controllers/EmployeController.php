@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Utilisateur;
 use App\Models\Employe;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 
 class EmployeController extends Controller
 {
 
-    ////--------AFFICHAGE DE TOUT LES EMPLOYEES ---------------------------------------
+    //------------AFFICHAGE DE TOUT LES EMPLOYEES ------------------------------------------
 
     public function index(): JsonResponse
     {
@@ -49,7 +49,7 @@ class EmployeController extends Controller
     }
 
         
-    //--------AJOUT D'UN EMPLOYE ----------------------------------------------------------
+    //-----------AJOUT D'UN EMPLOYE --------------------------------------------------------
 
     public function store(Request $request): JsonResponse
     {
@@ -64,7 +64,6 @@ class EmployeController extends Controller
             'nationalite'
         ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
-        // Créer l'employé avec le même ID
         $employe = Employe::create(array_merge($request->only([
             'matricule', 'fonction', 'poste', 
             'departement', 'situationFamille', 
@@ -106,7 +105,7 @@ class EmployeController extends Controller
         });
     }
 
-    //-----------VOIR UN EMPLOYE ----------------------------------------------------------
+    //-----------VOIR UN EMPLOYE -----------------------------------------------------------
 
     public function show($id): JsonResponse
     {

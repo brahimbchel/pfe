@@ -26,7 +26,7 @@ class StoreEmployeRequest extends FormRequest
             'matricule' => 'required|unique:employes',
             'fonction' => 'nullable|string|max:25',
             'poste' => 'required|string|max:25',
-            'departement' => 'required|string|max:20',
+            'departement' => 'nullable|string|max:20',
             'situationFamille' => 'required|in: célibataire, marié, séparé, veuf ou divorcé',
             'groupeSanguin' => 'required|in:A,B,AB,O',
             'rh' => 'required|in:+,-',
