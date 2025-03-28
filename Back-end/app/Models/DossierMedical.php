@@ -9,14 +9,14 @@ class DossierMedical extends Model
 {
     use HasFactory;
 
+    protected $table = 'dossiers_medicals';
     protected $fillable = [
-        'employe_id',
+        'matricule',
         'aptitudeDeTravail',
-        'description',
     ];
 
     public function employe()
     {
-        return $this->belongsTo(Employe::class);
+        return $this->belongsTo(Employe::class, 'matricule', 'matricule');
     }
 }

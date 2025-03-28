@@ -12,7 +12,7 @@ class Document extends Model
     protected $fillable = [
         'EmployeId',
         'nomDocument',
-        'LienScanne',
+        'lien',
         'typeDocument_id',
     ];
 

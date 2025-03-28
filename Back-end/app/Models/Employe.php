@@ -17,6 +17,7 @@ class Employe extends Utilisateur
         'situationFamille',
         'groupeSanguin',
         'rh',
+        'serviceNational',
         'formationScolaire',
         'formationProfessionnelle',
         'qualificationProfessionnelle',

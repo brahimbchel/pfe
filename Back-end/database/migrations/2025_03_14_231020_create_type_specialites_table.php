@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('type_specialites', function (Blueprint $table) {
             $table->id();
-            $table->string('NomSpecialite')->unique(); // Nom de la spécialité, clé unique
+            $table->string('NomSpecialite')->unique();
             $table->timestamps();
         });
     }

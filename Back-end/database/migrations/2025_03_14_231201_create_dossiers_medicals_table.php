@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('dossiers_medicals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employe_id')->unique(); // Assure que chaque employé a un seul dossier
+            $table->string('matricule')->unique();
             $table->enum('aptitudeDeTravail', ['apte', 'inapteTemporaire', 'inapteDefinitif']);
-            $table->text('description')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         
-            $table->foreign('employe_id')->references('id')->on('employes')->onDelete('cascade');
+            $table->foreign('matricule')->references('matricule')->on('employes')->onDelete('cascade');
         });
         
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('dossiers_medicals'); // Supprimez la table si elle existe
+        Schema::dropIfExists('dossiers_medicals'); 
     }
 };

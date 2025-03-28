@@ -33,6 +33,7 @@ class StoreEmployeRequest extends FormRequest
             'formationScolaire' => 'nullable|string|max:255',
             'formationProfessionnelle' => 'nullable|string|max:255',
             'qualificationProfessionnelle' => 'nullable|string|max:255',
+            'serviceNational' => 'nullable|in:Accompli,Dispensé, Inapte',
             'numSecuSocial' => 'required|regex:/^[0-9]{12}$/',
             'statutEmploye' => 'required|in:actif,inactif',
         ];

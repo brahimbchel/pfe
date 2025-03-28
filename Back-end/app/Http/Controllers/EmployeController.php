@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Utilisateur;
 use App\Models\Employe;
+use App\Models\DossierMedical;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -67,10 +68,16 @@ class EmployeController extends Controller
         $employe = Employe::create(array_merge($request->only([
             'matricule', 'fonction', 'poste', 
             'departement', 'situationFamille', 
-            'groupeSanguin', 'rh', 'formationScolaire', 
+            'groupeSanguin', 'rh', 'formationScolaire',
             'formationProfessionnelle', 'qualificationProfessionnelle', 
-            'numSecuSocial', 'statutEmploye'
+            'numSecuSocial', 'serviceNational', 'statutEmploye'
         ]), ['utilisateur_id' => $utilisateur->id]));
+
+        $dossierMedical = DossierMedical::create([
+            'matricule' => $employe->matricule,
+            'aptitudeDeTravail' => 'apte', // Valeur par défaut
+            'notes' => 'Dossier médical créé',
+        ]);
 
         // Créer une réponse avec tous les attributs
         $response = [
