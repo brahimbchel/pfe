@@ -22,5 +22,16 @@ Route::apiResource('medecins', MedecinController::class);
 Route::apiResource('documents', DocumentController::class);
 
 
-// Route pour gest. visites
+// Routes pour gest. visites
 Route::apiResource('visites', VisiteController::class);
+
+// ----MEDECINS------
+Route::patch('visites/{id}/prescriptions', [VisiteController::class, 'updatePrescriptions']);
+Route::patch('visites/{id}/observations', [VisiteController::class, 'updateObservations']);
+Route::get('medecins/{id}/historique-visites', [VisiteController::class, 'historiqueVisitesMedecin']);
+Route::get('medecins/{id}/visites-futures', [VisiteController::class, 'visitesFuturesMedecin']);
+
+// ----EMPLOYEES------
+Route::get('employes/{id}/historique-visites', [VisiteController::class, 'historiqueVisitesEmploye']);
+Route::get('employes/{id}/visites-futures', [VisiteController::class, 'visitesFuturesEmploye']);
+Route::get('employes/{id}/documents', [DocumentController::class, 'documentsEmploye']);
