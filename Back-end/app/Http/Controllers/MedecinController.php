@@ -46,6 +46,13 @@ class MedecinController extends Controller
     {
         // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
         return \DB::transaction(function () use ($request) {
+            
+            try {
+                $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+            }
+            
             // Créer l'utilisateur
             $utilisateur = Utilisateur::create(array_merge($request->only([
                 'nom', 'prenom', 'email', 'numTelephone', 
@@ -53,17 +60,17 @@ class MedecinController extends Controller
                 'wilayaNaissance', 'adresse', 'sexe', 
                 'nationalite'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
-    
-            // Récupérer le type de spécialité
-            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-    
+            
             // Créer le médecin
             $medecin = Medecin::create([
                 'utilisateur_id' => $utilisateur->id,
                 'typeSpecialite_id' => $typeSpecialite->id,
                 'adresseService' => $request->adresseService,
             ]);
-    
+
+            // Récupérer le type de spécialité
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        
             // Créer une réponse avec tous les attributs
             $response = [
                 'id' => $medecin->id,

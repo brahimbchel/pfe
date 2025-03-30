@@ -15,7 +15,8 @@ class Visite extends Model
         'EmployeId',
         'type',
         'cms_id',
-        'conclusionMedicale',
+        'prescriptions',
+        'observations',
     ];
 
     public function medecin()

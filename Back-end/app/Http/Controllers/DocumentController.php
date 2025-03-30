@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class DocumentController extends Controller
 {
+
     public function index(): JsonResponse
-    {
+{
         
         $documents = Document::with(['employe:id,matricule', 'typeDocument:id,nomTypeDocument'])->get()
             ->map(function ($document) {
@@ -26,7 +27,7 @@ class DocumentController extends Controller
             });
     
         return response()->json($documents, 200);
-    }
+}
 
     public function show($employe_id): JsonResponse
 {
@@ -78,12 +79,9 @@ class DocumentController extends Controller
 
     // Méthode pour mettre à jour un document
     public function update(Request $request, $id): JsonResponse
-    {
-        $document = Document::find($id);
-
-        if (!$document) {
-            return response()->json(['message' => 'Document non trouvé.'], 404);
-        }
+{
+    try {
+        $document = Document::findOrFail($id); // Trouve le document ou renvoie une erreur 404
 
         $validatedData = $request->validate([
             'nomDocument' => 'sometimes|required|string|max:255',
@@ -92,12 +90,25 @@ class DocumentController extends Controller
         ]);
 
         $document->update($validatedData);
-        return response()->json($document->load(['employe', 'typeDocument']), 200);
+
+        return response()->json([
+            'message' => 'Document modifié avec succès.'
+        ], 200);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'message' => 'Document non trouvé.'
+        ], 404);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Erreur lors de la mise à jour du document.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     // Méthode pour supprimer un document
     public function destroy($id): JsonResponse
-    {
+{
         $document = Document::find($id);
 
         if (!$document) {
@@ -106,5 +117,5 @@ class DocumentController extends Controller
 
         $document->delete();
         return response()->json(['message' => 'Document supprimé avec succès.'], 204);
-    }
+}
 }
