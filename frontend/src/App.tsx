@@ -10,8 +10,6 @@ import Register from './pages/Register';
 import NotFound404 from './pages/NotFound404';
 import AdminLayout from './layout/AdminLayout';
 import RendezVous from './pages/admin/RendezVous';
-import MedcinList from './pages/admin/MedcinList';
-import EmployersList from './pages/admin/EmployersList';
 import EmpHomePage from './pages/employer/EmpHomePAge';
 import EmpProfile from './pages/employer/EmpProfile';
 import EmpLayout from './layout/EmpLayout';
@@ -19,6 +17,9 @@ import MedLayout from './layout/MedLayout';
 import ListRendezVous from './pages/medcin/ListRendezVous';
 import EmpRendezVous from './pages/medcin/EmpRendezVous';
 import PrivateRoute from './components/PrivateRoute';
+import RendezVousForm from './components/admin-rendez-vous/RendezVousForm';
+import Employers from './pages/admin/Employers';
+import Medcins from './pages/admin/Medcins';
 
 function ProtectedRoute({ element }: { element: React.ReactElement }) {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -40,11 +41,18 @@ function App() {
       </Route>
 
       {/* Protected Routes */}
+
       <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-        <Route path="admin" element={<ProtectedRoute element={<AdminLayout />} />}>
-          <Route path="" element={<RendezVous />} />
-          <Route path="medcin-list" element={<MedcinList />} />
-          <Route path="employers-list" element={<EmployersList />} />
+        <Route path="admin" element={<AdminLayout />}>
+          {/* Rendez-vous group */}
+          <Route path="rendez-vous">
+            <Route index element={<RendezVous />} />
+            <Route path="ajoute-rendez-vous" element={<RendezVousForm />} />
+          </Route>
+
+          {/* Other admin routes */}
+          <Route path="medcin-list" element={<Medcins />} />
+          <Route path="employers-list" element={<Employers />} />
         </Route>
       </Route>
 

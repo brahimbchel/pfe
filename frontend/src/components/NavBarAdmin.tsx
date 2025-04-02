@@ -22,7 +22,7 @@ export default function Navbar() {
         </button>
         <ul className="hidden md:flex space-x-8 text-lg">
           <li className="hover:text-gray-300 cursor-pointer">
-            <Link to="/admin/" className={`flex items-center space-x-2 ${location.pathname === "/admin/" ? "text-blue-400" : ""}`}>
+            <Link to="/admin/rendez-vous" className={`flex items-center space-x-2 ${location.pathname === "/admin/rendez-vous" ? "text-blue-400" : ""}`}>
               <CalendarCheck size={20} /> <span>Rendez-Vous</span>
             </Link>
           </li>

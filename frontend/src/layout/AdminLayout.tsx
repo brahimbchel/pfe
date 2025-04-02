@@ -5,7 +5,7 @@ const AdminLayout = () => {
   return (
     <div>
       <NavbarAdmin />
-      <h1>AdminLayout</h1>
+      {/* <h1>Admin Layout</h1> */}
       <Outlet />
     </div>
   )
