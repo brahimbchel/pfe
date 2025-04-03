@@ -26,7 +26,7 @@ class TypeSpecialiteController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $validatedData = $request->validate(['NomSpecialite' => 'required|string|max:255']);
+        $validatedData = $request->validate(['NomSpecialite' => 'required|string|max:255unique:type_specialites,nomSpecialite']);
         $typeSpecialite = TypeSpecialite::findOrFail($id);
         $typeSpecialite->update($validatedData);
         return response()->json(['message' => 'Spécialité renommé.'], 200);
