@@ -22,19 +22,19 @@ export default function Navbar() {
         </button>
         <ul className="hidden md:flex space-x-8 text-lg">
           <li className="hover:text-gray-300 cursor-pointer">
-            <Link to="/admin/rendez-vous" className={`flex items-center space-x-2 ${location.pathname === "/admin/rendez-vous" ? "text-blue-400" : ""}`}>
+            <Link to="/admin/rendez-vous" className={`flex items-center space-x-2 ${location.pathname.startsWith("/admin/rendez-vous") ? "text-blue-400" : ""}`}>
               <CalendarCheck size={20} /> <span>Rendez-Vous</span>
             </Link>
           </li>
 
           <li className="hover:text-gray-300 cursor-pointer">
-            <Link to="/admin/medcin-list" className={`flex items-center space-x-2 ${location.pathname === "/admin/medcin-list" ? "text-blue-400" : ""}`}>
+            <Link to="/admin/medcin" className={`flex items-center space-x-2 ${ location.pathname.startsWith("/admin/medcin") ? "text-blue-400" : ""}`}>
               <Stethoscope size={20} /> <span>Medcins</span>
             </Link>
           </li>
 
           <li className="hover:text-gray-300 cursor-pointer">
-            <Link to="/admin/employers-list" className={`flex items-center space-x-2 ${location.pathname === "/admin/employers-list" ? "text-blue-400" : ""}`}>
+            <Link to="/admin/employers" className={`flex items-center space-x-2 ${location.pathname.startsWith("/admin/employers") ? "text-blue-400" : ""}`}>
               <Briefcase size={20} /> <span>Employers</span>
             </Link>
           </li>

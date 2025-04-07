@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import RendezVousFilters from './RendezVousFilters';
 import RendezVousRow from './RendezVousRow';
+import { useNavigate } from 'react-router';
 
+
+// fix the architecteur later
 type RendezVous = {
-  id: string;
+
+  // user info
+  // userId: string
   nom: string;
   matricule: string;
-  datetime: Date;
-  medcin: string;
+
+  // medcin info
+  medcin: string;  // medcinId , medsinNom, medsinSpeciality
   speciality: string;
+
+  // rendv info
+  id: string; // id rndv
+  datetime: Date;
   type: string;
 };
 
@@ -16,7 +26,7 @@ const RendezVousList: React.FC = () => {
   // Temporary mock data - later replace with API data.
   const mockData: RendezVous[] = [
     {
-      id: '1',
+      id: 'RDV1',
       nom: 'Ibrahim Boucheloui',
       matricule: '202031067120',
       datetime: new Date('2024-03-29T14:30'),
@@ -25,7 +35,7 @@ const RendezVousList: React.FC = () => {
       type: 'Périodique',
     },
     {
-      id: '2',
+      id: 'RDV2',
       nom: 'Tammer Daoud',
       matricule: '212131067120',
       datetime: new Date('2024-04-03T10:30'),
@@ -57,8 +67,11 @@ const RendezVousList: React.FC = () => {
     console.log(`Delete item with id: ${id}`);
   };
 
+  const navigate = useNavigate()
+
   const handleUpdate = (id: string) => {
     console.log(`Update item with id: ${id}`);
+    navigate(`/admin/rendez-vous/update/${id}`)
   };
 
   return (
@@ -69,27 +82,32 @@ const RendezVousList: React.FC = () => {
         onFilterChange={handleFilterChange}
       />
 
-      <table className="w-full border-collapse">
+    <div className="overflow-x-auto">
+      <table className="table-auto">
         <thead className="bg-gray-50">
           <tr>
-            <th className="p-3 text-left">Nom</th>
-            <th className="p-3 text-left">Matricule</th>
-            <th className="p-3 text-left">Date/Heure</th>
-            <th className="p-3 text-left">Médecin</th>
-            <th className="p-3 text-left">Spécialité</th>
-            <th className="p-3 text-left">Type</th>
-            <th className="p-3 text-left">Action</th>
+            <th className="p-3 text-left text-gray-700">Nom</th>
+            <th className="p-3 text-left text-gray-700">Matricule</th>
+            <th className="p-3 text-left text-gray-700">Date/Heure</th>
+            <th className="p-3 text-left text-gray-700">Médecin</th>
+            <th className="p-3 text-left text-gray-700">Spécialité</th>
+            <th className="p-3 text-left text-gray-700">Type</th>
+            <th className="p-3 text-left text-gray-700">Action</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <RendezVousRow key={item.id}
+            <RendezVousRow
+              key={item.id}
               rendezVous={item}
               onDelete={handleDelete}
-              onUpdate={handleUpdate} />
+              onUpdate={handleUpdate}
+            />
           ))}
         </tbody>
       </table>
+    </div>
+
     </div>
   );
 };

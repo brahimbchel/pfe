@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router'
-import './App.css';
 import { useAuthStore } from './store/useAuthStore';
 import MainLayout from './layout/MainLaout';
 import Home from './pages/Home';
@@ -20,6 +19,11 @@ import PrivateRoute from './components/PrivateRoute';
 import RendezVousForm from './components/admin-rendez-vous/RendezVousForm';
 import Employers from './pages/admin/Employers';
 import Medcins from './pages/admin/Medcins';
+import MedcinsForm from './components/admin-medcin/MedcinsForm';
+import EmployerForm from './components/admin-employer/EmployerForm';
+import UpdateMedcinForm from './components/admin-medcin/UpdateMedcinForm';
+import UpdateEmployerForm from './components/admin-employer/UpdateEmployerForm';
+import UpdateRendezVousForm from './components/admin-rendez-vous/UpdateRendezVousForm';
 
 function ProtectedRoute({ element }: { element: React.ReactElement }) {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -44,15 +48,24 @@ function App() {
 
       <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
         <Route path="admin" element={<AdminLayout />}>
-          {/* Rendez-vous group */}
           <Route path="rendez-vous">
             <Route index element={<RendezVous />} />
             <Route path="ajoute-rendez-vous" element={<RendezVousForm />} />
+            <Route path="update/:id" element={<UpdateRendezVousForm />} />
           </Route>
 
-          {/* Other admin routes */}
-          <Route path="medcin-list" element={<Medcins />} />
-          <Route path="employers-list" element={<Employers />} />
+          <Route path="medcin">
+            <Route index element={<Medcins />} />
+            <Route path="ajoute-medcin" element={<MedcinsForm /> } />
+            <Route path="update/:id" element={<UpdateMedcinForm />} />
+          </Route>
+
+          <Route path="employers">
+            <Route index element={<Employers />} />
+            <Route path="ajoute-employer" element={<EmployerForm /> } />
+            <Route path="update/:id" element={<UpdateEmployerForm />} />
+          </Route>
+
         </Route>
       </Route>
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import EmployersFilters from "./EmployersFilters";
 import EmployersRow from "./EmployersRow";
+import { useNavigate } from "react-router";
 
 type Employer = {
   id: string;
@@ -13,6 +14,8 @@ type Employer = {
 };
 
 const EmployersList: React.FC = () => {
+  const navigate = useNavigate();
+
 
   const mockData: Employer[] = [
     {
@@ -21,7 +24,7 @@ const EmployersList: React.FC = () => {
       matricule: "EMP1234567",
       post: "Software Engineer",
       email: "ali.bensalem@example.com",
-      phone: "+213 650 123 456",
+      phone: "0650123456",
       status: "Active",
     },
     {
@@ -30,8 +33,8 @@ const EmployersList: React.FC = () => {
       matricule: "EMP2345678",
       post: "Project Manager",
       email: "sofia.lamine@example.com",
-      phone: "+213 770 987 654",
-      status: "On Leave",
+      phone: "0770987654",
+      status: "OnLeave",
     },
     {
       id: "3c4d5e6f",
@@ -39,7 +42,7 @@ const EmployersList: React.FC = () => {
       matricule: "EMP3456789",
       post: "HR Specialist",
       email: "yassine.kacem@example.com",
-      phone: "+213 555 456 789",
+      phone: "0555456789",
       status: "Inactive",
     },
   ];
@@ -63,7 +66,8 @@ const EmployersList: React.FC = () => {
   };
 
   const handleUpdate = (id: string) => {
-    console.log(`Update Employer with id: ${id}`);
+    // console.log(`Update Employer with id: ${id}`);
+    navigate(`/admin/employers/update/${id}`)
   };
 
 
@@ -74,29 +78,33 @@ const EmployersList: React.FC = () => {
         onFilterChange={handleFilterChange}
       />
 
-      <table className="w-full border-collapse">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="p-3 text-left">Nom</th>
-            <th className="p-3 text-left">Matricule</th>
-            <th className="p-3 text-left">Post</th>
-            <th className="p-3 text-left">phone</th>
-            <th className="p-3 text-left">email</th>
-            <th className="p-3 text-left">status</th>
-            <th className="p-3 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((employer) => (
+<div className="overflow-x-auto">
+  <table className="min-w-full table-auto border-collapse">
+    <thead className="bg-gray-50">
+      <tr>
+        <th className="p-3 text-left">Nom</th>
+        <th className="p-3 text-left">Matricule</th>
+        <th className="p-3 text-left">Post</th>
+        <th className="p-3 text-left">Email</th>
+        <th className="p-3 text-left">Phone</th>
+        <th className="p-3 text-left">Status</th>
+        <th className="p-3 text-left">Action</th>
+      </tr>
+    </thead>
 
-            <EmployersRow key={employer.id}
-              employer={employer}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate} />
-          ))}
+    <tbody>
+      {filteredData.map((employer) => (
+        <EmployersRow
+          key={employer.id}
+          employer={employer}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+        />
+      ))}
+    </tbody>
+  </table>
+</div>
 
-        </tbody>
-      </table>
 
     </div>
   )
