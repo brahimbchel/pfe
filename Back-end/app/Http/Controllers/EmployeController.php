@@ -48,6 +48,7 @@ class EmployeController extends Controller
 
         return response()->json($formattedEmployes, 200);
     }
+
         
     //-----------AJOUT D'UN EMPLOYE --------------------------------------------------------
 
@@ -60,7 +61,7 @@ class EmployeController extends Controller
         $utilisateur = Utilisateur::create(array_merge($request->only([
             'nom', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
-            'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
+            'wilayaNaissance', 'adresse', 'sexe', 
             'nationalite'
         ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
@@ -78,7 +79,36 @@ class EmployeController extends Controller
             'notes' => 'Dossier médical créé',
         ]);
 
-        return response()->json(['message' => 'Employé creé avec succès.'], 201);
+        // Créer une réponse avec tous les attributs
+        $response = [
+            'id' => $employe->id,
+            'matricule' => $employe->matricule,
+            'fonction' => $employe->fonction,
+            'poste' => $employe->poste,
+            'departement' => $employe->departement,
+            'situationFamille' => $employe->situationFamille,
+            'groupeSanguin' => $employe->groupeSanguin,
+            'rh' => $employe->rh,
+            'formationScolaire' => $employe->formationScolaire,
+            'formationProfessionnelle' => $employe->formationProfessionnelle,
+            'qualificationProfessionnelle' => $employe->qualificationProfessionnelle,
+            'numSecuSocial' => $employe->numSecuSocial,
+            'statutEmploye' => $employe->statutEmploye,
+            'nom' => $utilisateur->nom,
+            'prenom' => $utilisateur->prenom,
+            'email' => $utilisateur->email,
+            'numTelephone' => $utilisateur->numTelephone,
+            'dateNaissance' => $utilisateur->dateNaissance,
+            'lieuNaissance' => $utilisateur->lieuNaissance,
+            'wilayaNaissance' => $utilisateur->wilayaNaissance,
+            'adresse' => $utilisateur->adresse,
+            'sexe' => $utilisateur->sexe,
+            'nationalite' => $utilisateur->nationalite,
+            'created_at' => $employe->created_at,
+            'updated_at' => $employe->updated_at,
+        ];
+
+             return response()->json($response, 201);
         });
     }
 
@@ -100,7 +130,6 @@ class EmployeController extends Controller
             'lieuNaissance' => $employe->utilisateur->lieuNaissance,
             'wilayaNaissance' => $employe->utilisateur->wilayaNaissance,
             'adresse' => $employe->utilisateur->adresse,
-            'wilaya' => $employe->utilisateur->wilaya,
             'sexe' => $employe->utilisateur->sexe,
             'nationalite' => $employe->utilisateur->nationalite,
             'fonction' => $employe->fonction,
@@ -121,6 +150,7 @@ class EmployeController extends Controller
         return response()->json($response, 200);
     }
 
+
     //-----------MODIFICATION D'UN EMPLOYE ------------------------------------------------
 
     public function update(Request $request, $id): JsonResponse
@@ -131,7 +161,7 @@ class EmployeController extends Controller
         $employe->utilisateur->update($request->only([
             'nom', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
-            'wilayaNaissance', 'adresse','wilaya', 'sexe', 
+            'wilayaNaissance', 'adresse', 'sexe', 
             'nationalite'
         ]));
     
@@ -144,8 +174,38 @@ class EmployeController extends Controller
             'numSecuSocial', 'statutEmploye'
         ]));
     
-        return response()->json(['message' => 'Employé modifié avec succès.'], 200);
+        // Créer une réponse avec tous les attributs au même niveau
+        $response = [
+            'id' => $employe->id,
+            'matricule' => $employe->matricule,
+            'fonction' => $employe->fonction,
+            'poste' => $employe->poste,
+            'departement' => $employe->departement,
+            'situationFamille' => $employe->situationFamille,
+            'groupeSanguin' => $employe->groupeSanguin,
+            'rh' => $employe->rh,
+            'formationScolaire' => $employe->formationScolaire,
+            'formationProfessionnelle' => $employe->formationProfessionnelle,
+            'qualificationProfessionnelle' => $employe->qualificationProfessionnelle,
+            'numSecuSocial' => $employe->numSecuSocial,
+            'statutEmploye' => $employe->statutEmploye,
+            'nom' => $employe->utilisateur->nom,
+            'prenom' => $employe->utilisateur->prenom,
+            'email' => $employe->utilisateur->email,
+            'numTelephone' => $employe->utilisateur->numTelephone,
+            'dateNaissance' => $employe->utilisateur->dateNaissance,
+            'lieuNaissance' => $employe->utilisateur->lieuNaissance,
+            'wilayaNaissance' => $employe->utilisateur->wilayaNaissance,
+            'adresse' => $employe->utilisateur->adresse,
+            'sexe' => $employe->utilisateur->sexe,
+            'nationalite' => $employe->utilisateur->nationalite,
+            'created_at' => $employe->created_at,
+            'updated_at' => $employe->updated_at,
+        ];
+    
+        return response()->json($response, 200);
     }
+
 
     //-----------SUPPRISSION D'UN EMPLOYE --------------------------------------------------
     

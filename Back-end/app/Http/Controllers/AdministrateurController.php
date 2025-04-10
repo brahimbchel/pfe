@@ -40,7 +40,7 @@ class AdministrateurController extends Controller
             $utilisateur = Utilisateur::create(array_merge($request->only([
                 'nom', 'prenom', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
-                'wilayaNaissance', 'adresse','wilaya', 'sexe', 
+                'wilayaNaissance', 'adresse', 'sexe', 
                 'nationalite'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
@@ -75,9 +75,9 @@ class AdministrateurController extends Controller
 
         $administrateur->utilisateur->update($request->only([
             'nom', 'prenom', 'email', 'numTelephone', 
-            'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
-            'adresse','wilaya',
-            'sexe', 'nationalite'
+            'dateNaissance', 'lieuNaissance', 
+            'wilayaNaissance', 'adresse', 'sexe', 
+            'nationalite'
         ]));
 
         return response()->json(['message' => 'Administrateur mis à jour avec succès'], 200);

@@ -162,4 +162,78 @@ use Illuminate\Support\Facades\Validator;
     
             return response()->json($response, 200);
         }
+
+        //----------------------------------------------------------
+
+        public function updateObservations(Request $request, $id): JsonResponse
+        {
+            $validatedData = $request->validate([
+                'observations' => 'required|string|max:500',
+            ]);
+        
+            $visite = Visite::find($id);
+        
+            if (!$visite) {
+                return response()->json(['message' => 'Visite non trouvée.'], 404);
+            }
+        
+            $visite->observations = $validatedData['observations'];
+            $visite->save();
+        
+            return response()->json(['message' => 'Observations mises à jour avec succès.'], 200);
+        }
+
+        //----------------------------------------------------------
+
+        public function updatePrescriptions(Request $request, $id): JsonResponse
+        {
+            $validatedData = $request->validate([
+                'prescriptions' => 'required|string|max:500',
+            ]);
+        
+            $visite = Visite::find($id);
+        
+            if (!$visite) {
+                return response()->json(['message' => 'Visite non trouvée.'], 404);
+            }
+        
+            $visite->prescriptions = $validatedData['prescriptions'];
+            $visite->save();
+        
+            return response()->json(['message' => 'Prescriptions mises à jour avec succès.'], 200);
+        }
+
+        //----------------------------------------------------------
+
+        public function historiqueVisitesMedecin($id): JsonResponse
+        {
+            $visites = Visite::where('medecinId', $id)
+                             ->where('dateVisite', '<', now())
+                             ->get();
+            return response()->json($visites, 200);
+        }
+
+        public function visitesFuturesMedecin($id): JsonResponse
+        {
+            $visites = Visite::where('medecinId', $id)
+                             ->where('dateVisite', '>=', now())
+                             ->get();
+            return response()->json($visites, 200);
+        }
+
+        public function historiqueVisitesEmploye($id): JsonResponse
+        {
+            $visites = Visite::where('employeId', $id)
+                             ->where('dateVisite', '<', now())
+                             ->get();
+            return response()->json($visites, 200);
+        }
+
+        public function visitesFuturesEmploye($id): JsonResponse
+        {
+            $visites = Visite::where('employeId', $id)
+                             ->where('dateVisite', '>=', now())
+                             ->get();
+            return response()->json($visites, 200);
+        }
 }

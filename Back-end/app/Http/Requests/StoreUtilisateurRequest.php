@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Requests;
-use App\Enums\WilayaEnum;
-
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +11,7 @@ class StoreUtilisateurRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -32,9 +30,8 @@ class StoreUtilisateurRequest extends FormRequest
             'dateNaissance' => 'required|date',
             'lieuNaissance' => 'required|string|max:255',
             'wilayaNaissance' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
-            'sexe' => 'required|in:masculin,féminin',
             'adresse' => 'required|string|max:255',
-            'wilaya' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
+            'sexe' => 'required|in:masculin,féminin',
             'nationalite' => 'required|string|max:255',
         ];
     }

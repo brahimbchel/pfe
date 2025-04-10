@@ -10,7 +10,7 @@ class TypeSpecialite extends Model
     use HasFactory;
 
     protected $fillable = [
-        'NomSpecialite',
+        'nomTypeSpecialite',
     ];
 
     public function medecins()

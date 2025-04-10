@@ -57,7 +57,7 @@ class MedecinController extends Controller
             $utilisateur = Utilisateur::create(array_merge($request->only([
                 'nom', 'prenom', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
-                'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
+                'wilayaNaissance', 'adresse', 'sexe', 
                 'nationalite'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
             
@@ -83,7 +83,6 @@ class MedecinController extends Controller
                 'lieuNaissance' => $utilisateur->lieuNaissance,
                 'wilayaNaissance' => $utilisateur->wilayaNaissance,
                 'adresse' => $utilisateur->adresse,
-                'wilaya' => $utilisateur->wilaya,
                 'sexe' => $utilisateur->sexe,
                 'nationalite' => $utilisateur->nationalite,
                 'typeSpecialite' => $typeSpecialite->NomSpecialite,
@@ -111,8 +110,6 @@ class MedecinController extends Controller
             'dateNaissance' => $medecin->utilisateur->dateNaissance,
             'lieuNaissance' => $medecin->utilisateur->lieuNaissance,
             'wilayaNaissance' => $medecin->utilisateur->wilayaNaissance,
-            'adresse' => $medecin->utilisateur->adresse,
-            'wilaya' => $medecin->utilisateur->wilaya,
             'sexe' => $medecin->utilisateur->sexe,
             'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
@@ -131,9 +128,9 @@ class MedecinController extends Controller
 
         $medecin->utilisateur->update($request->only([
             'nom', 'prenom', 'email', 'numTelephone',
-            'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
-            'adresse','wilaya',
-            'sexe', 'nationalite'
+            'dateNaissance', 'lieuNaissance',
+            'wilayaNaissance', 'adresse', 'sexe',
+            'nationalite'
         ]));
 
         $medecin->update($request->only(['adresseService' , 'specialite']));
