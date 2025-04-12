@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Employe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -117,5 +118,32 @@ class DocumentController extends Controller
 
         $document->delete();
         return response()->json(['message' => 'Document supprimé avec succès.'], 204);
+}
+
+public function documentsEmploye($id): JsonResponse
+{
+    // Vérifiez si l'employé existe
+    $employe = Employe::find($id);
+    
+    if (!$employe) {
+        return response()->json(['message' => 'Employé non trouvé.'], 404);
+    }
+
+    // Récupérez les documents associés à cet employé avec le type de document
+    $documents = Document::with(['typeDocument:id,nomTypeDocument'])
+        ->where('employeId', $id)
+        ->get()
+        ->map(function ($document) {
+            return [
+                'id' => $document->id,
+                'nomDocument' => $document->nomDocument,
+                'TypeDocument' => $document->typeDocument->nomTypeDocument ?? null, // nom du type de document
+                'lien' => $document->lien,
+                'created_at' => $document->created_at,
+                'updated_at' => $document->updated_at,
+            ];
+        });
+
+    return response()->json($documents, 200);
 }
 }
