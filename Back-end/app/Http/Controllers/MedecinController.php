@@ -32,7 +32,7 @@ class MedecinController extends Controller
             'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
             'adresse' => $medecin->utilisateur->adresse,
-            'wilaya' => $utilisateur->wilaya,
+            'wilaya' => $medecin->utilisateur->wilayaNaissance,
             'adresseService' => $medecin->adresseService,
             'created_at' => $medecin->created_at,
             'updated_at' => $medecin->updated_at,
@@ -55,13 +55,17 @@ class MedecinController extends Controller
                 return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
             }
             
-            // Créer l'utilisateur
-            $utilisateur = Utilisateur::create(array_merge($request->only([
+            $userData = $request->only([
                 'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
                 'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
                 'nationalite'
-            ]), ['motDePasse' => bcrypt($request->motDePasse)]));
+            ]);
+            
+            // Ajouter nomConjoint et motDePasse séparément
+            $userData['motDePasse'] = bcrypt($request->motDePasse);
+            
+            $utilisateur = Utilisateur::create($userData);
             
             // Créer le médecin
             $medecin = Medecin::create([
@@ -69,32 +73,8 @@ class MedecinController extends Controller
                 'typeSpecialite_id' => $typeSpecialite->id,
                 'adresseService' => $request->adresseService,
             ]);
-
-            // Récupérer le type de spécialité
-            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-        
-            // Créer une réponse avec tous les attributs
-            $response = [
-                'id' => $medecin->id,
-                'utilisateur_id' => $utilisateur->id,
-                'nom' => $utilisateur->nom,
-                'prenom' => $utilisateur->prenom,
-                'email' => $utilisateur->email,
-                'numTelephone' => $utilisateur->numTelephone,
-                'dateNaissance' => $utilisateur->dateNaissance,
-                'lieuNaissance' => $utilisateur->lieuNaissance,
-                'wilayaNaissance' => $utilisateur->wilayaNaissance,
-                'adresse' => $utilisateur->adresse,
-                'wilaya' => $utilisateur->wilaya,
-                'sexe' => $utilisateur->sexe,
-                'nationalite' => $utilisateur->nationalite,
-                'typeSpecialite' => $typeSpecialite->NomSpecialite,
-                'adresseService' => $medecin->adresseService,
-                'created_at' => $medecin->created_at,
-                'updated_at' => $medecin->updated_at,
-            ];
     
-            return response()->json($response, 201);
+            return response()->json(['message' => 'Medecin creé avec succès.'], 201);
         });
     }
 

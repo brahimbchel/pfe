@@ -64,7 +64,10 @@ class EmployeController extends Controller
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
             'nationalite'
-        ]), ['motDePasse' => bcrypt($request->motDePasse)]));
+        ]), [
+            'motDePasse' => bcrypt($request->motDePasse),
+            'nomConjoint' => $request->nomConjoint ?? null  // Add this line to ensure nomConjoint is either the provided value or null
+        ]));
 
         $employe = Employe::create(array_merge($request->only([
             'matricule', 'fonction', 'poste', 

@@ -27,7 +27,7 @@ class StoreEmployeRequest extends FormRequest
             'fonction' => 'nullable|string|max:25',
             'poste' => 'required|string|max:25',
             'departement' => 'nullable|string|max:20',
-            'situationFamille' => 'required|in:célibaftaire,marié,séparé,veuf,divorcé',
+            'situationFamille' => 'required|in:célibataire,marié,séparé,veuf,divorcé',
             'groupeSanguin' => 'required|in:A,B,AB,O',
             'rh' => 'required|in:+,-',
             'formationScolaire' => 'nullable|string|max:255',

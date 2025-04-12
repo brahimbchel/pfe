@@ -13,6 +13,7 @@ class Utilisateur extends Model
 
     protected $fillable = [
         'nom',
+        'nomConjoint',
         'prenom',
         'email',
         'numTelephone',
