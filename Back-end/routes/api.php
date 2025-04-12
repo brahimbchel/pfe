@@ -20,10 +20,8 @@ Route::apiResource('administrateurs', AdministrateurController::class);
 // Routes pour gest. des medcins
 Route::apiResource('medecins', MedecinController::class);
 
-
 // Routes pour gest. des documents
 Route::apiResource('documents', DocumentController::class);
-
 
 // Routes pour gest. visites
 Route::apiResource('visites', VisiteController::class);

@@ -26,7 +26,7 @@ class EmployeController extends Controller
                 'id', 'matricule', 'fonction', 'poste', 
                 'departement', 'situationFamille', 'groupeSanguin', 
                 'rh', 'formationScolaire', 'formationProfessionnelle', 
-                'qualificationProfessionnelle', 'numSecuSocial', 
+                'qualificationProfessionnelle', 'serviceNational', 'numSecuSocial', 
                 'statutEmploye', 'created_at', 'updated_at'
             ]);
 
@@ -39,6 +39,7 @@ class EmployeController extends Controller
             $data['lieuNaissance'] = $employe->utilisateur->lieuNaissance;
             $data['wilayaNaissance'] = $employe->utilisateur->wilayaNaissance;
             $data['adresse'] = $employe->utilisateur->adresse;
+            $data['wilaya'] = $employe->utilisateur->wilaya;
             $data['sexe'] = $employe->utilisateur->sexe;
             $data['nationalite'] = $employe->utilisateur->nationalite;
 

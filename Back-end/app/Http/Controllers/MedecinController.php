@@ -31,6 +31,7 @@ class MedecinController extends Controller
             'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
             'adresse' => $medecin->utilisateur->adresse,
+            'wilaya' => $utilisateur->wilaya,
             'adresseService' => $medecin->adresseService,
             'created_at' => $medecin->created_at,
             'updated_at' => $medecin->updated_at,
