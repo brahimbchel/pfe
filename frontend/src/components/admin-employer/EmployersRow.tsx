@@ -3,20 +3,41 @@
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
+
 type Employer = {
-  id: string;
-  nom: string;
+  id: number;
   matricule: string;
-  post: string;
+  fonction: string;
+  poste: string;
+  departement: string;
+
+  situationFamille: string;
+  groupeSanguin: string;
+  rh: string;
+  formationScolaire: string;
+  formationProfessionnelle: string;
+  qualificationProfessionnelle: string;
+  numSecuSocial: string;
+  statutEmploye: string;
+  created_at: string;
+  updated_at: string;
+
+  nom: string;
+  prenom: string;
   email: string;
-  phone: string;
-  status: string;
+  numTelephone: string;
+  dateNaissance: string;
+  lieuNaissance: string;
+  wilayaNaissance: string;
+  adresse: string;
+  sexe: string;
+  nationalite: string;
 };
 
 interface EmployerRowProps {
   employer: Employer;
-  onDelete: (id: string) => void;
-  onUpdate: (id: string) => void;
+  onDelete: (id: number) => void;
+  onUpdate: (id: number) => void;
 }
 
 
@@ -27,16 +48,17 @@ const EmployersRow: React.FC<EmployerRowProps> = ({ employer, onDelete, onUpdate
 
   return (
     <tr className="hover:bg-gray-50 border-t">
-      <td className="p-3">{employer.nom}</td>
-      <td className="p-3">{employer.matricule}</td>
-      <td className="p-3">{employer.post}</td>
-      <td className="p-3">{employer.email}</td>
-      <td className="p-3">{employer.phone}</td>
-      <td className="p-3">
-        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
-          {employer.status}
-        </span>
-      </td>
+  <td className="p-3">{employer.matricule}</td>
+  <td className="p-3">{employer.nom}</td>
+  <td className="p-3">{employer.prenom}</td>
+  <td className="p-3">{employer.sexe}</td>
+  <td className="p-3">{employer.dateNaissance}</td>
+  <td className="p-3">{employer.lieuNaissance}</td>
+  <td className="p-3">{employer.adresse}</td>
+  <td className="p-3">{employer.numTelephone}</td>
+  <td className="p-3">{employer.email}</td>
+  {/* <td className="p-3"> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">{employer.statutEmploye}</span></td> */}
+      
 
       <td className="p-3 relative">
         <button onClick={toggleActions} className="focus:outline-none">

@@ -8,7 +8,7 @@ const Employers = () => {
         title="Liste des employer"
         description="Gestion des employer"
         buttonText="Créer un Employer"
-        buttonLink="/admin/rendez-vous/ajoute-rendez-vous"
+        buttonLink="/admin/employers/ajoute-employer"
       />
       <EmployersList />
     </div>
