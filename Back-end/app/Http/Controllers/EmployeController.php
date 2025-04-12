@@ -26,8 +26,8 @@ class EmployeController extends Controller
                 'id', 'matricule', 'fonction', 'poste', 
                 'departement', 'situationFamille', 'groupeSanguin', 
                 'rh', 'formationScolaire', 'formationProfessionnelle', 
-                'qualificationProfessionnelle', 'serviceNational', 'numSecuSocial', 
-                'statutEmploye', 'created_at', 'updated_at'
+                'qualificationProfessionnelle', 'serviceNational', 'numSecuSocial',
+                'serviceNational', 'statutEmploye', 'created_at', 'updated_at'
             ]);
 
             // Ajouter les attributs de l'utilisateur
@@ -116,6 +116,7 @@ class EmployeController extends Controller
             'formationProfessionnelle' => $employe->formationProfessionnelle,
             'qualificationProfessionnelle' => $employe->qualificationProfessionnelle,
             'numSecuSocial' => $employe->numSecuSocial,
+            'serviceNational' => $employe->serviceNational,
             'statutEmploye' => $employe->statutEmploye,
             'created_at' => $employe->created_at,
             'updated_at' => $employe->updated_at,
