@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('type_documents', function (Blueprint $table) {
             $table->id();
-            $table->string('nomTypeDocument');
+            $table->string('nomTypeDocument')->unique();
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@ class CreateVisitesTable extends Migration
     public function up()
     {
         Schema::create('visites', function (Blueprint $table) {
-            $table->id('idVisite');
+            $table->id();
             $table->dateTime('dateVisite');
             $table->unsignedBigInteger('MedecinId');
             $table->unsignedBigInteger('EmployeId');

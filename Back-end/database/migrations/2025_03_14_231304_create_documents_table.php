@@ -9,14 +9,15 @@ class CreateDocumentsTable extends Migration
     public function up()
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->id('idDocument'); 
-            $table->unsignedBigInteger('EmployeId'); 
+            $table->id(); 
             $table->string('nomDocument');
-            $table->string('LienScanne');
-    
+            $table->string('lien');
+            
+            $table->unsignedBigInteger('EmployeId');
             $table->unsignedBigInteger('typeDocument_id'); 
-            $table->timestamps();
-
+            
+            $table->timestamps()
+            ;
             $table->foreign('EmployeId')->references('id')->on('employes')->onDelete('cascade');
             $table->foreign('typeDocument_id')->references('id')->on('type_documents')->onDelete('cascade');
         });

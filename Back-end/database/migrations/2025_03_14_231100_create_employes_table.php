@@ -12,16 +12,17 @@ class CreateEmployesTable extends Migration
         $table->id(); 
         $table->unsignedBigInteger('utilisateur_id');
         $table->string('matricule')->unique();
-        $table->string('fonction');
-        $table->string('poste');
+        $table->string('numSecuSocial');
         $table->string('departement');
+        $table->string('poste');
+        $table->string('fonction');
+        $table->enum('groupeSanguin', ['A', 'B', 'AB', 'O']);
+        $table->enum('rh', ['+','-']);
         $table->string('situationFamille');
-        $table->enum('groupeSanguin', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
-        $table->string('rh');
         $table->string('formationScolaire');
         $table->string('formationProfessionnelle');
         $table->string('qualificationProfessionnelle');
-        $table->string('numSecuSocial');
+        $table->enum('serviceNational', ['Accompli', 'Dispensé', 'Inapte']);
         $table->enum('statutEmploye', ['actif', 'inactif'])->default('actif');
         $table->timestamps();
         
