@@ -19,8 +19,9 @@ class MedecinController extends Controller
 
         $formattedMedecins = $medecins->map(function ($medecin) {
             return [
-                'id' => $medecin->id,
+            'id' => $medecin->id,
             'nom' => $medecin->utilisateur->nom,
+            'nomConjoint' => $medecin->utilisateur->nomConjoint,
             'prenom' => $medecin->utilisateur->prenom,
             'email' => $medecin->utilisateur->email,
             'numTelephone' => $medecin->utilisateur->numTelephone,
@@ -56,7 +57,7 @@ class MedecinController extends Controller
             
             // Créer l'utilisateur
             $utilisateur = Utilisateur::create(array_merge($request->only([
-                'nom', 'prenom', 'email', 'numTelephone', 
+                'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
                 'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
                 'nationalite'
@@ -106,6 +107,7 @@ class MedecinController extends Controller
         return response()->json([
             'id' => $medecin->id,
             'nom' => $medecin->utilisateur->nom,
+            'nomConjoint' => $medecin->utilisateur->nomConjoint,
             'prenom' => $medecin->utilisateur->prenom,
             'email' => $medecin->utilisateur->email,
             'numTelephone' => $medecin->utilisateur->numTelephone,
@@ -131,7 +133,7 @@ class MedecinController extends Controller
         $medecin = Medecin::with('utilisateur')->findOrFail($id);
 
         $medecin->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone',
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone',
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
             'adresse','wilaya',
             'sexe', 'nationalite'

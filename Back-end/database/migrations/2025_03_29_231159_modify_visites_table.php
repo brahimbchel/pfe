@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('visites', function (Blueprint $table) {
             // Ajouter les nouvelles colonnes
-            $table->string('type');
             $table->text('prescriptions')->nullable();
             $table->text('observations')->nullable();
 

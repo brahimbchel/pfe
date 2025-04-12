@@ -32,6 +32,7 @@ class EmployeController extends Controller
 
             // Ajouter les attributs de l'utilisateur
             $data['nom'] = $employe->utilisateur->nom;
+            $data['nomConjoint'] = $employe->utilisateur->nomConjoint;
             $data['prenom'] = $employe->utilisateur->prenom;
             $data['email'] = $employe->utilisateur->email;
             $data['numTelephone'] = $employe->utilisateur->numTelephone;
@@ -59,7 +60,7 @@ class EmployeController extends Controller
      {
         // Créer l'utilisateur
         $utilisateur = Utilisateur::create(array_merge($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
             'nationalite'
@@ -93,6 +94,7 @@ class EmployeController extends Controller
         $response = [
             'id' => $employe->id,
             'nom' => $employe->utilisateur->nom,
+            'nomConjoint' => $employe->utilisateur->nomConjoint,
             'prenom' => $employe->utilisateur->prenom,
             'email' => $employe->utilisateur->email,
             'numTelephone' => $employe->utilisateur->numTelephone,
@@ -130,7 +132,7 @@ class EmployeController extends Controller
     
         // Mettre à jour les informations de l'utilisateur
         $employe->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse','wilaya', 'sexe', 
             'nationalite'

@@ -25,6 +25,7 @@ class StoreUtilisateurRequest extends FormRequest
     {
         return [
             'nom' => 'required|string|max:255',
+            'nomConjoint' => 'nullable|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:utilisateurs,email',
             'numTelephone' => 'required|unique:utilisateurs,numTelephone|regex:/^[0-9]{10}$/',

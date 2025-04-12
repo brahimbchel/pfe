@@ -21,6 +21,7 @@ class AdministrateurController extends Controller
             return [
                 'id' => $administrateur->id,
                 'nom' => $administrateur->utilisateur->nom,
+                'nomConjoint' => $administrateur->utilisateur->nomConjoint,
                 'prenom' => $administrateur->utilisateur->prenom,
                 'email' => $administrateur->utilisateur->email,
                 'numTelephone' => $administrateur->utilisateur->numTelephone,
@@ -38,7 +39,7 @@ class AdministrateurController extends Controller
         return DB::transaction(function () use ($request) {
 
             $utilisateur = Utilisateur::create(array_merge($request->only([
-                'nom', 'prenom', 'email', 'numTelephone', 
+                'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
                 'wilayaNaissance', 'adresse','wilaya', 'sexe', 
                 'nationalite'
@@ -60,6 +61,7 @@ class AdministrateurController extends Controller
         return response()->json([
             'id' => $administrateur->id,
             'nom' => $administrateur->utilisateur->nom,
+            'nomConjoint' => $administrateur->utilisateur->nomConjoint,
             'prenom' => $administrateur->utilisateur->prenom,
             'email' => $administrateur->utilisateur->email,
             'numTelephone' => $administrateur->utilisateur->numTelephone,
@@ -74,7 +76,7 @@ class AdministrateurController extends Controller
         $administrateur = Administrateur::with('utilisateur')->findOrFail($id);
 
         $administrateur->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
             'adresse','wilaya',
             'sexe', 'nationalite'
