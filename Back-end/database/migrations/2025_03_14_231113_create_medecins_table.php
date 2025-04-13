@@ -18,14 +18,6 @@ return new class extends Migration
             $table->foreign('utilisateur_id')->references('id')->on('utilisateurs')->onDelete('cascade');
             $table->foreign('typeSpecialite_id')->references('id')->on('type_specialites')->onDelete('cascade');
         });
-    
-        Schema::create('medecin_disponibilite', function (Blueprint $table) {
-            $table->unsignedBigInteger('medecin_id');
-            $table->date('disponibilite');
-            $table->timestamps(); 
-            
-            $table->foreign('medecin_id')->references('id')->on('medecins')->onDelete('cascade');
-        });
     }
 
     public function down(): void

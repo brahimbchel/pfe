@@ -21,21 +21,9 @@ class MedecinController extends Controller
             return [
             'id' => $medecin->id,
             'nom' => $medecin->utilisateur->nom,
-            'nomConjoint' => $medecin->utilisateur->nomConjoint,
             'prenom' => $medecin->utilisateur->prenom,
-            'email' => $medecin->utilisateur->email,
-            'numTelephone' => $medecin->utilisateur->numTelephone,
-            'dateNaissance' => $medecin->utilisateur->dateNaissance,
-            'lieuNaissance' => $medecin->utilisateur->lieuNaissance,
-            'wilayaNaissance' => $medecin->utilisateur->wilayaNaissance,
-            'sexe' => $medecin->utilisateur->sexe,
-            'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
-            'adresse' => $medecin->utilisateur->adresse,
-            'wilaya' => $medecin->utilisateur->wilayaNaissance,
             'adresseService' => $medecin->adresseService,
-            'created_at' => $medecin->created_at,
-            'updated_at' => $medecin->updated_at,
             ];
         });
 
@@ -44,38 +32,39 @@ class MedecinController extends Controller
 
     //-----------AJOUT D'UN MEDECIN -----------------------------------------------------
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
-        return \DB::transaction(function () use ($request) {
-            
-            try {
-                $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-                return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
-            }
-            
-            $userData = $request->only([
-                'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
+        
+        // Si masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+            $request->merge(['nomConjoint' => null]);
+        }
+        
+        // Si féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+        }
+        
+        try {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+        }
+            // Créer l'utilisateur avant de créer le médecin
+            $utilisateur = Utilisateur::create(array_merge($request->only([
+                'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
-                'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
+                'wilayaNaissance', 'adresse','wilaya', 'sexe', 
                 'nationalite'
-            ]);
-            
-            // Ajouter nomConjoint et motDePasse séparément
-            $userData['motDePasse'] = bcrypt($request->motDePasse);
-            
-            $utilisateur = Utilisateur::create($userData);
-            
-            // Créer le médecin
+            ]), ['motDePasse' => bcrypt($request->motDePasse)]));
+
             $medecin = Medecin::create([
                 'utilisateur_id' => $utilisateur->id,
                 'typeSpecialite_id' => $typeSpecialite->id,
                 'adresseService' => $request->adresseService,
             ]);
-    
-            return response()->json(['message' => 'Medecin creé avec succès.'], 201);
-        });
+        
+            return response()->json(['message' => 'Un est medecin créé avec succès'], 201);
     }
 
     //-----------VOIR UN MEDECIN --------------------------------------------------------
@@ -112,6 +101,22 @@ class MedecinController extends Controller
     {
         $medecin = Medecin::with('utilisateur')->findOrFail($id);
 
+        // Si masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+            $request->merge(['nomConjoint' => null]);
+        }
+        
+        // Si féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+        }
+        
+        try {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+        }
+
         $medecin->utilisateur->update($request->only([
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone',
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
@@ -119,7 +124,10 @@ class MedecinController extends Controller
             'sexe', 'nationalite'
         ]));
 
-        $medecin->update($request->only(['adresseService' , 'specialite']));
+        $medecin->update([
+            'adresseService' => $request->adresseService,
+            'typeSpecialite_id' => $typeSpecialite->id
+        ]);
 
         return response()->json(['message' => 'Médecin mis à jour avec succès'], 200);
     }
@@ -134,14 +142,5 @@ class MedecinController extends Controller
         $medecin->delete();
 
         return response()->json(['message' => 'Médecin supprimé avec succès.'], 200);
-    }
-
-    //------------AFFICHAGE DE TOUTES LES SPECIALITES ------------------------------------
-
-    public function getSpecialites(): JsonResponse
-    {
-        $specialites = TypeSpecialite::all(); // Récupérer toutes les spécialités
-
-        return response()->json($specialites, 200);
     }
 }
