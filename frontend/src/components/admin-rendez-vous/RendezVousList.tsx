@@ -82,8 +82,8 @@ const RendezVousList: React.FC = () => {
         onFilterChange={handleFilterChange}
       />
 
-    <div className="overflow-x-auto">
-      <table className="table-auto">
+    <div className="">
+      <table className="w-full">
         <thead className="bg-gray-50">
           <tr>
             <th className="p-3 text-left text-gray-700">Nom</th>

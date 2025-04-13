@@ -2,13 +2,22 @@ import { PencilIcon, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 
 type Medcin = {
-    id: string;
-    nom: string;
-    matricule: string;
-    speciality: string;
-    email: string;
-    phone: string;
-  };
+  id: string;
+  nom: string,
+  prenom: string,
+  email: string,
+  numTelephone: string,
+  dateNaissance: string,
+  lieuNaissance: string,
+  wilayaNaissance: string,
+  sexe: string,
+  nationalite: string,
+  specialite: string,
+  adresse: string,
+  adresseService: string,
+  created_at: string,
+  updated_at: string
+};
 
   interface MedcinRowProps {
     medcin: Medcin;
@@ -26,10 +35,11 @@ const MedcinsRow: React.FC<MedcinRowProps> = ({ medcin, onDelete, onUpdate }) =>
     return (
         <tr className="hover:bg-gray-50 border-t">
             <td className="p-3">{medcin.nom}</td>
-            <td className="p-3">{medcin.matricule}</td>
-            <td className="p-3">{medcin.speciality}</td>
+            <td className="p-3">{medcin.id}</td>
+            <td className="p-3">{medcin.specialite}</td> 
+            <td className="p-3">{medcin.adresseService}</td>
             <td className="p-3">{medcin.email}</td>
-            <td className="p-3">{medcin.phone}</td>
+            <td className="p-3">{medcin.numTelephone}</td>
 
             <td className="p-3 relative">
         <button onClick={toggleActions} className="focus:outline-none">

@@ -273,7 +273,6 @@ const EmployersForm = () => {
         />
         {errors.lieuNaissance && <p className="text-red-500 text-sm mt-1">{errors.lieuNaissance.message}</p>}
     </div>
-
     
     <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">

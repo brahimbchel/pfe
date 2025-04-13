@@ -1,73 +1,66 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MedcinsRow from "./MedcinsRow";
 import MedcinsFilters from "./MedcinsFilters";
 import { useNavigate } from "react-router";
 
 type Medcin = {
     id: string;
-    nom: string;
-    matricule: string;
-    speciality: string;
-    email: string;
-    phone: string;
+    nom: string,
+    prenom: string,
+    email: string,
+    numTelephone: string,
+    dateNaissance: string,
+    lieuNaissance: string,
+    wilayaNaissance: string,
+    sexe: string,
+    nationalite: string,
+    specialite: string,
+    adresse: string,
+    adresseService: string,
+    created_at: string,
+    updated_at: string
   };
 
 const MedcinsList: React.FC = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState()
+  const [medcins, setMedcins] = useState<Medcin[]>([])
+  
+  useEffect(() => {
+    const getAllMedcins = async () => {
+      try {
+        setIsLoading(true); 
+  
+        const response = await fetch("http://127.0.0.1:8000/api/medecins");
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const medecinsData = await response.json();
+        setMedcins(medecinsData);
+  
+      } catch (error: any) {
+        setError(error.message)
+        console.error("Failed to fetch medecins:", error);
+      } finally {
+        setIsLoading(false); 
+      }
+    }
 
+    getAllMedcins()
+  }, [])
 
-    const medcins: Medcin[] = [
-        {
-          id: "MED1",
-          nom: "Dr.Ahmed Benali",
-          matricule: "MDC12345",
-          speciality: "Cardiologist",
-          email: "abenali@example.com",
-          phone: "+213661234567",
-        },
-        {
-          id: "MED2",
-          nom: "Dr.Fatima Zeroual",
-          matricule: "MDC12346",
-          speciality: "Dermatologist",
-          email: "fzeroual@example.com",
-          phone: "+213662345678",
-        },
-        {
-          id: "MED3",
-          nom: "Dr.Samir Bouziid",
-          matricule: "MDC12347",
-          speciality: "Neurologist",
-          email: "sbouzid@exMEDample.com",
-          phone: "+213663456789",
-        },
-        {
-          id: "MED4",
-          nom: "Dr.Laila Mansouri",
-          matricule: "MDC12348",
-          speciality: "Pediatrician",
-          email: "lmansouri@example.com",
-          phone: "+213664567890",
-        },
-        {
-          id: "MED5",
-          nom: "Dr. Rachid Khellaf",
-          matricule: "MDC12349",
-          speciality: "Orthopedic Surgeon",
-          email: "rkhellaf@example.com",
-          phone: "+213665678901",
-        },
-      ];
+        const [specialite, setSpecialite] = useState<string>('Tous');
 
-        const [speciality, setSpeciality] = useState<string>('Tous');
-
-        const handleFilterChange = (filters: { speciality: string }) => {
-            setSpeciality(filters.speciality);
+        const handleFilterChange = (filters: { specialite: string }) => {
+            setSpecialite(filters.specialite);
         };
 
         const filteredData = medcins.filter((medcin) => {
-            const specialityMatch = speciality === 'Tous' || medcin.speciality === speciality;
-            return specialityMatch
+            const specialiteMatch = specialite === 'Tous' || medcin.specialite === specialite;
+            return specialiteMatch
         });
 
 
@@ -80,11 +73,18 @@ const MedcinsList: React.FC = () => {
           navigate(`/admin/medcin/update/${id}`)
         };
 
+        if (isLoading) {
+          return <div>Loading ...</div>
+        }
+      
+        if (error) {
+          return <div>somthing went wrong, try again && {error}</div>
+        }
 
     return (
         <div>
           <MedcinsFilters 
-              selectedSpeciality={speciality}
+              selectedSpecialite={specialite}
               onFilterChange={handleFilterChange}
           />
           <div className="overflow-x-auto">
@@ -93,7 +93,8 @@ const MedcinsList: React.FC = () => {
                 <tr>
                   <th className="p-3 text-left">Nom</th>
                   <th className="p-3 text-left">Matricule</th>
-                  <th className="p-3 text-left">Speciality</th>
+                  <th className="p-3 text-left">specialite</th> 
+                  <th className="p-3 text-left">adresse service</th>
                   <th className="p-3 text-left">Email</th>
                   <th className="p-3 text-left">Phone</th>
                   <th className="p-3 text-left">Action</th>

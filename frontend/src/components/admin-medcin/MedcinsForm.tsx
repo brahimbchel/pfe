@@ -1,13 +1,3 @@
-
-// const MedcinsForm = () => {
-//     return (
-//         <div>Form Medin</div>
-//     )
-// }
-
-// export default MedcinsForm
-
-
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,25 +5,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 type MedcinFormValues = {
-  matricule: string;
-  nom: string;
-  speciality: string;
-  email: string;
-  phone: string;
+  nom: string,
+  prenom: string,
+  email: string,
+  numTelephone: string,
+  dateNaissance: string,
+  lieuNaissance: string,
+  wilayaNaissance: string,
+  sexe: string,
+  nationalite: string,
+  typeSpecialite: string,
+  adresse: string,
+  adresseService: string,
 };
 
 const medcinSchema = yup.object({
-  matricule: yup.string().required("Matricule est requis"),
   nom: yup.string().required("Nom est requis"),
-  speciality: yup.string().required("Spécialité est requise"),
-  email: yup
-    .string()
-    .email("Email invalide")
-    .required("Adresse email est requise"),
-  phone: yup
-    .string()
-    .matches(/^\+?\d{10,15}$/, "Numéro de téléphone invalide")
-    .required("Téléphone est requis"),
+  prenom: yup.string().required("Prenom est requis"),
+  email: yup.string().email("Email invalide").required("Adresse email est requise"),
+  numTelephone: yup.string().matches(/^\+?\d{10,15}$/, "Numéro de téléphone invalide").required("Téléphone est requis"),
+  typeSpecialite: yup.string().required("Spécialité est requise"),
+  adresse: yup.string().required("est requis"),
+  adresseService: yup.string().required("est requis"),
+  dateNaissance: yup.string().required("est requis"),
+  lieuNaissance: yup.string().required("est requis"),
+  wilayaNaissance: yup.string().required("est requis"),
+  nationalite: yup.string().required("est requis"),
+  sexe: yup.string().required("est requis"),
 });
 
 const MedcinsForm = () => {
@@ -48,38 +46,75 @@ const MedcinsForm = () => {
   } = useForm<MedcinFormValues>({
     resolver: yupResolver(medcinSchema),
     defaultValues: {
-      matricule: "",
+      // matricule: "",
       nom: "",
-      speciality: "",
+      prenom: "",
       email: "",
-      phone: "",
+      numTelephone: "",
+
+      typeSpecialite: "",
+      adresse: "",
+      adresseService: "",
+
+      dateNaissance: "",
+      lieuNaissance: "",
+      wilayaNaissance: "",
+      sexe: "",
+      nationalite: "",
     },
   });
 
   const onSubmit: SubmitHandler<MedcinFormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Médecin enregistré:", data);
-      reset();
-      navigate("/admin/medcin");
+      const response = await fetch("http://127.0.0.1:8000/api/medecins", {
+        method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur lors de l'envoi:", errorData);
+      } else {
+        console.log("Employé ajouté avec succès !, data: ", data);
+        reset();
+        navigate("/admin/medcin");
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const specialities = [
-    "Cardiologue",
-    "Dermatologue",
-    "Neurologue",
-    "Pédiatre",
-    "Généraliste",
-    "Chirurgien orthopédique",
-    "Ophtalmologue",
-    "Psychiatre",
-    "Endocrinologue",
-    "Oncologue",
+    "Cardiologie",
+    "Dermatologie",
+    "Endocrinologie",
+    "Gastro-entérologie",
+    "Gynécologie",
+    "Hématologie",
+    "Médecine Interne",
+    "Médecine Générale",
+    "Néphrologie",
+    "Oncologie",
+    "Ophtalmologie",
+    "ORL (Oto-Rhino-Laryngologie)",
+    "Orthopédie",
+    "Pédiatrie",
+    "Psychiatrie",
+    "Pneumologie",
+    "Radiologie",
+    "Rhumatologie",
+    "Chirurgie Générale",
+    "Chirurgie Cardiaque",
+    "Chirurgie Orthopédique",
+    "Chirurgie Esthétique",
+    "Chirurgie Vasculaire",
+    "Médecine du travail",
   ];
 
   return (
@@ -89,9 +124,10 @@ const MedcinsForm = () => {
           <h2 className="text-2xl font-bold text-gray-800">Ajouter un Médecin</h2>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit, (errors) => console.log("Validation Errors:", errors))} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Matricule
               </label>
@@ -103,7 +139,7 @@ const MedcinsForm = () => {
               {errors.matricule && (
                 <p className="text-red-500 text-sm mt-1">{errors.matricule.message}</p>
               )}
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -121,22 +157,16 @@ const MedcinsForm = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Spécialité
+                Prenom complet
               </label>
-              <select
-                {...register("speciality")}
-                className={`input ${errors.speciality ? "input-error" : ""}`}
-              >
-                <option value="">Sélectionnez une spécialité</option>
-                {specialities.map((spec) => (
-                  <option key={spec} value={spec}>
-                    {spec}
-                  </option>
-                ))}
-              </select>
-              {errors.speciality && (
-                <p className="text-red-500 text-sm mt-1">{errors.speciality.message}</p>
-              )}
+              <input
+                {...register("prenom")}
+                className={`input ${errors.prenom ? "input-error" : ""}`}
+                placeholder="Prenom complet"
+              />
+              {/* {errors.nom && (
+                <p className="text-red-500 text-sm mt-1">{errors.prenom.message}</p>
+              )} */}
             </div>
 
             <div>
@@ -156,19 +186,125 @@ const MedcinsForm = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Téléphone
+                Telephone
               </label>
               <input
-                {...register("phone")}
-                className={`input ${errors.phone ? "input-error" : ""}`}
+                {...register("numTelephone")}
+                className={`input ${errors.numTelephone ? "input-error" : ""}`}
                 placeholder="+213xXXXXXXXX"
               />
-              {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+              {errors.numTelephone && (
+                <p className="text-red-500 text-sm mt-1">{errors.numTelephone.message}</p>
               )}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Spécialité
+              </label>
+              <select
+                {...register("typeSpecialite")}
+                className={`input ${errors.typeSpecialite ? "input-error" : ""}`}
+              >
+                <option value="">Sélectionnez une spécialité</option>
+                {specialities.map((spec) => (
+                  <option key={spec} value={spec}>
+                    {spec}
+                  </option>
+                ))}
+              </select>
+              {errors.typeSpecialite && (
+                <p className="text-red-500 text-sm mt-1">{errors.typeSpecialite.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+              adresse
+              </label>
+              <input
+                {...register("adresse")}
+                className={`input ${errors.adresse ? 'input-error' : ''}`}
+                placeholder="Entrez l'adresse"
+              />
+              {errors.adresse && <p className="text-red-500 text-sm mt-1">{errors.adresse.message}</p>}
           </div>
 
+          <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+              adresse Service
+              </label>
+              <input
+                {...register("adresseService")}
+                className={`input ${errors.adresseService ? 'input-error' : ''}`}
+                placeholder="Entrez l'adresseService"
+              />
+              {errors.adresseService && <p className="text-red-500 text-sm mt-1">{errors.adresseService.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            date Naissance
+            </label>
+            <input
+              {...register("dateNaissance")}
+              className={`input ${errors.dateNaissance ? 'input-error' : ''}`}
+              placeholder="Entrez le numéro de dateNaissance"
+            />
+            {errors.dateNaissance && <p className="text-red-500 text-sm mt-1">{errors.dateNaissance.message}</p>}
+        </div>
+
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            lieu Naissance
+            </label>
+            <input
+              {...register("lieuNaissance")}
+              className={`input ${errors.lieuNaissance ? 'input-error' : ''}`}
+              placeholder="Entrez le lieu de Naissance"
+            />
+            {errors.lieuNaissance && <p className="text-red-500 text-sm mt-1">{errors.lieuNaissance.message}</p>}
+        </div>
+        
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            wilaya Naissance
+            </label>
+            <input
+              {...register("wilayaNaissance")}
+              className={`input ${errors.wilayaNaissance ? 'input-error' : ''}`}
+              placeholder="Entrez la wilaya de Naissance"
+            />
+            {errors.wilayaNaissance && <p className="text-red-500 text-sm mt-1">{errors.wilayaNaissance.message}</p>}
+        </div>
+        
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            sexe
+            </label>
+            <input
+              {...register("sexe")}
+              className={`input ${errors.sexe ? 'input-error' : ''}`}
+              placeholder="Entrez le sexe"
+            />
+            {errors.sexe && <p className="text-red-500 text-sm mt-1">{errors.sexe.message}</p>}
+        </div>
+        
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            nationalite
+            </label>
+            <input
+              {...register("nationalite")}
+              className={`input ${errors.nationalite ? 'input-error' : ''}`}
+              placeholder="Entrez la nationalite"
+            />
+            {errors.nationalite && <p className="text-red-500 text-sm mt-1">{errors.nationalite.message}</p>}
+        </div>
+            
+          </div>
+
+{/* form footer -------------- */}
           <div className="flex justify-end gap-3 mt-8">
             <button
               type="button"
@@ -186,6 +322,7 @@ const MedcinsForm = () => {
             >
               {isSubmitting ? "Enregistrement..." : "Ajouter Médecin"}
             </button>
+            
           </div>
         </form>
       </div>

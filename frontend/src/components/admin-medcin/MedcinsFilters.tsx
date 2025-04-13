@@ -1,14 +1,14 @@
 import React from 'react'
 
 interface MedcinFiltersProps {
-    selectedSpeciality: string;
-    onFilterChange: (filters: { speciality: string }) => void;
+    selectedSpecialite: string;
+    onFilterChange: (filters: { specialite: string }) => void;
   }
 
   
-const MedcinsFilters: React.FC<MedcinFiltersProps> = ({selectedSpeciality, onFilterChange}) => {
-    const handleSpecialityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        onFilterChange({ speciality: e.target.value });
+const MedcinsFilters: React.FC<MedcinFiltersProps> = ({selectedSpecialite, onFilterChange}) => {
+    const handlespecialiteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        onFilterChange({ specialite: e.target.value });
       };
 
     return (
@@ -17,8 +17,8 @@ const MedcinsFilters: React.FC<MedcinFiltersProps> = ({selectedSpeciality, onFil
           <label className="block text-sm font-medium text-gray-700">Type de Visite:</label>
           <select
             className="p-1 border rounded-md w-full sm:w-40"
-            value={selectedSpeciality}
-          onChange={handleSpecialityChange}
+            value={selectedSpecialite}
+          onChange={handlespecialiteChange}
         >
             <option value="Tous">Tous</option>
             <option value="Cardiologist">Cardiologist</option>
