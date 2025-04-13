@@ -23,25 +23,13 @@ class EmployeController extends Controller
         $formattedEmployes = $employes->map(function ($employe) {
             // Créer un tableau avec les attributs de l'employé
             $data = $employe->only([
-                'id', 'matricule', 'fonction', 'poste', 
-                'departement', 'situationFamille', 'groupeSanguin', 
-                'rh', 'formationScolaire', 'formationProfessionnelle', 
-                'qualificationProfessionnelle', 'numSecuSocial', 
-                'statutEmploye', 'created_at', 'updated_at'
+                'id', 'matricule', 'poste', 
+                'departement','statutEmploye'
             ]);
 
             // Ajouter les attributs de l'utilisateur
             $data['nom'] = $employe->utilisateur->nom;
             $data['prenom'] = $employe->utilisateur->prenom;
-            $data['email'] = $employe->utilisateur->email;
-            $data['numTelephone'] = $employe->utilisateur->numTelephone;
-            $data['dateNaissance'] = $employe->utilisateur->dateNaissance;
-            $data['lieuNaissance'] = $employe->utilisateur->lieuNaissance;
-            $data['wilayaNaissance'] = $employe->utilisateur->wilayaNaissance;
-            $data['adresse'] = $employe->utilisateur->adresse;
-            $data['sexe'] = $employe->utilisateur->sexe;
-            $data['nationalite'] = $employe->utilisateur->nationalite;
-
             // Retourner les données sans l'objet utilisateur
             return $data;
         });
@@ -57,13 +45,26 @@ class EmployeController extends Controller
      // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
      return \DB::transaction(function () use ($request) 
      {
+        // Si l'employé est masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+             $request->merge(['nomConjoint' => null]);
+        }
+
+         // Si l'employé est féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+             return response()->json(['error' => 'Le champ nomConjoint est requis pour les employées féminines.'], 422);
+        }
+
         // Créer l'utilisateur
         $utilisateur = Utilisateur::create(array_merge($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'sexe', 
             'nationalite'
-        ]), ['motDePasse' => bcrypt($request->motDePasse)]));
+        ]), [
+            'motDePasse' => bcrypt($request->motDePasse),
+            'nomConjoint' => $request->nomConjoint ?? null  // Add this line to ensure nomConjoint is either the provided value or null
+        ]));
 
         $employe = Employe::create(array_merge($request->only([
             'matricule', 'fonction', 'poste', 
@@ -122,6 +123,7 @@ class EmployeController extends Controller
         $response = [
             'id' => $employe->id,
             'nom' => $employe->utilisateur->nom,
+            'nomConjoint' => $employe->utilisateur->nomConjoint,
             'prenom' => $employe->utilisateur->prenom,
             'email' => $employe->utilisateur->email,
             'numTelephone' => $employe->utilisateur->numTelephone,
@@ -142,6 +144,7 @@ class EmployeController extends Controller
             'formationProfessionnelle' => $employe->formationProfessionnelle,
             'qualificationProfessionnelle' => $employe->qualificationProfessionnelle,
             'numSecuSocial' => $employe->numSecuSocial,
+            'serviceNational' => $employe->serviceNational,
             'statutEmploye' => $employe->statutEmploye,
             'created_at' => $employe->created_at,
             'updated_at' => $employe->updated_at,
@@ -155,11 +158,22 @@ class EmployeController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
+        
         $employe = Employe::with('utilisateur')->findOrFail($id);
-    
+        
+        // Si l'employé est masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+            $request->merge(['nomConjoint' => null]);
+        }
+
+        // Si l'employé est féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nomConjoint est requis pour les employées féminines.'], 422);
+        }
+        
         // Mettre à jour les informations de l'utilisateur
         $employe->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'sexe', 
             'nationalite'

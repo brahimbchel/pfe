@@ -19,21 +19,11 @@ class MedecinController extends Controller
 
         $formattedMedecins = $medecins->map(function ($medecin) {
             return [
-                'id' => $medecin->id,
+            'id' => $medecin->id,
             'nom' => $medecin->utilisateur->nom,
             'prenom' => $medecin->utilisateur->prenom,
-            'email' => $medecin->utilisateur->email,
-            'numTelephone' => $medecin->utilisateur->numTelephone,
-            'dateNaissance' => $medecin->utilisateur->dateNaissance,
-            'lieuNaissance' => $medecin->utilisateur->lieuNaissance,
-            'wilayaNaissance' => $medecin->utilisateur->wilayaNaissance,
-            'sexe' => $medecin->utilisateur->sexe,
-            'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
-            'adresse' => $medecin->utilisateur->adresse,
             'adresseService' => $medecin->adresseService,
-            'created_at' => $medecin->created_at,
-            'updated_at' => $medecin->updated_at,
             ];
         });
 
@@ -42,57 +32,39 @@ class MedecinController extends Controller
 
     //-----------AJOUT D'UN MEDECIN -----------------------------------------------------
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
-        return \DB::transaction(function () use ($request) {
-            
-            try {
-                $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-                return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
-            }
-            
-            // Créer l'utilisateur
+        
+        // Si masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+            $request->merge(['nomConjoint' => null]);
+        }
+        
+        // Si féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+        }
+        
+        try {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+        }
+            // Créer l'utilisateur avant de créer le médecin
             $utilisateur = Utilisateur::create(array_merge($request->only([
-                'nom', 'prenom', 'email', 'numTelephone', 
+                'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
-                'wilayaNaissance', 'adresse', 'sexe', 
+                'wilayaNaissance', 'adresse','wilaya', 'sexe', 
                 'nationalite'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
-            
-            // Créer le médecin
+
             $medecin = Medecin::create([
                 'utilisateur_id' => $utilisateur->id,
                 'typeSpecialite_id' => $typeSpecialite->id,
                 'adresseService' => $request->adresseService,
             ]);
-
-            // Récupérer le type de spécialité
-            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
         
-            // Créer une réponse avec tous les attributs
-            $response = [
-                'id' => $medecin->id,
-                'utilisateur_id' => $utilisateur->id,
-                'nom' => $utilisateur->nom,
-                'prenom' => $utilisateur->prenom,
-                'email' => $utilisateur->email,
-                'numTelephone' => $utilisateur->numTelephone,
-                'dateNaissance' => $utilisateur->dateNaissance,
-                'lieuNaissance' => $utilisateur->lieuNaissance,
-                'wilayaNaissance' => $utilisateur->wilayaNaissance,
-                'adresse' => $utilisateur->adresse,
-                'sexe' => $utilisateur->sexe,
-                'nationalite' => $utilisateur->nationalite,
-                'typeSpecialite' => $typeSpecialite->NomSpecialite,
-                'adresseService' => $medecin->adresseService,
-                'created_at' => $medecin->created_at,
-                'updated_at' => $medecin->updated_at,
-            ];
-    
-            return response()->json($response, 201);
-        });
+            return response()->json(['message' => 'Un est medecin créé avec succès'], 201);
     }
 
     //-----------VOIR UN MEDECIN --------------------------------------------------------
@@ -104,12 +76,15 @@ class MedecinController extends Controller
         return response()->json([
             'id' => $medecin->id,
             'nom' => $medecin->utilisateur->nom,
+            'nomConjoint' => $medecin->utilisateur->nomConjoint,
             'prenom' => $medecin->utilisateur->prenom,
             'email' => $medecin->utilisateur->email,
             'numTelephone' => $medecin->utilisateur->numTelephone,
             'dateNaissance' => $medecin->utilisateur->dateNaissance,
             'lieuNaissance' => $medecin->utilisateur->lieuNaissance,
             'wilayaNaissance' => $medecin->utilisateur->wilayaNaissance,
+            'adresse' => $medecin->utilisateur->adresse,
+            'wilaya' => $medecin->utilisateur->wilaya,
             'sexe' => $medecin->utilisateur->sexe,
             'nationalite' => $medecin->utilisateur->nationalite,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
@@ -126,14 +101,33 @@ class MedecinController extends Controller
     {
         $medecin = Medecin::with('utilisateur')->findOrFail($id);
 
+        // Si masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+            $request->merge(['nomConjoint' => null]);
+        }
+        
+        // Si féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+        }
+        
+        try {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+        }
+
         $medecin->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone',
-            'dateNaissance', 'lieuNaissance',
-            'wilayaNaissance', 'adresse', 'sexe',
-            'nationalite'
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone',
+            'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
+            'adresse','wilaya',
+            'sexe', 'nationalite'
         ]));
 
-        $medecin->update($request->only(['adresseService' , 'specialite']));
+        $medecin->update([
+            'adresseService' => $request->adresseService,
+            'typeSpecialite_id' => $typeSpecialite->id
+        ]);
 
         return response()->json(['message' => 'Médecin mis à jour avec succès'], 200);
     }
@@ -148,14 +142,5 @@ class MedecinController extends Controller
         $medecin->delete();
 
         return response()->json(['message' => 'Médecin supprimé avec succès.'], 200);
-    }
-
-    //------------AFFICHAGE DE TOUTES LES SPECIALITES ------------------------------------
-
-    public function getSpecialites(): JsonResponse
-    {
-        $specialites = TypeSpecialite::all(); // Récupérer toutes les spécialités
-
-        return response()->json($specialites, 200);
     }
 }

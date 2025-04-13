@@ -19,13 +19,10 @@ class AdministrateurController extends Controller
 
         $formattedAdministrateurs = $administrateurs->map(function ($administrateur) {
             return [
-                'id' => $administrateur->id,
                 'nom' => $administrateur->utilisateur->nom,
                 'prenom' => $administrateur->utilisateur->prenom,
                 'email' => $administrateur->utilisateur->email,
                 'numTelephone' => $administrateur->utilisateur->numTelephone,
-                'created_at' => $administrateur->created_at,
-                'updated_at' => $administrateur->updated_at,
             ];
         });
 
@@ -37,10 +34,21 @@ class AdministrateurController extends Controller
     {
         return DB::transaction(function () use ($request) {
 
+
+        // Si masculin, forcer nomConjoint à null
+        if ($request->sexe === 'masculin') {
+                $request->merge(['nomConjoint' => null]);
+        }
+
+        // Si féminin, vérifier que nomConjoint est présent
+        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+                return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+        }
+
             $utilisateur = Utilisateur::create(array_merge($request->only([
-                'nom', 'prenom', 'email', 'numTelephone', 
+                'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
-                'wilayaNaissance', 'adresse', 'sexe', 
+                'wilayaNaissance', 'adresse','wilaya', 'sexe', 
                 'nationalite'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
@@ -61,8 +69,16 @@ class AdministrateurController extends Controller
             'id' => $administrateur->id,
             'nom' => $administrateur->utilisateur->nom,
             'prenom' => $administrateur->utilisateur->prenom,
+            'nomConjoint' => $administrateur->utilisateur->nomConjoint,
             'email' => $administrateur->utilisateur->email,
             'numTelephone' => $administrateur->utilisateur->numTelephone,
+            'dateNaissance' => $administrateur->utilisateur->dateNaissance,
+            'lieuNaissance' => $administrateur->utilisateur->lieuNaissance,
+            'wilayaNaissance' => $administrateur->utilisateur->wilayaNaissance,
+            'adresse' => $administrateur->utilisateur->adresse,
+            'wilaya' => $administrateur->utilisateur->wilaya,
+            'sexe' => $administrateur->utilisateur->sexe,
+            'nationalite' => $administrateur->utilisateur->nationalite,
             'created_at' => $administrateur->created_at,
             'updated_at' => $administrateur->updated_at,
         ], 200);
@@ -73,11 +89,20 @@ class AdministrateurController extends Controller
     {
         $administrateur = Administrateur::with('utilisateur')->findOrFail($id);
 
+            // Si masculin, forcer nomConjoint à null
+            if ($request->sexe === 'masculin') {
+             $request->merge(['nomConjoint' => null]);
+            }
+            // Si féminin, vérifier que nomConjoint est présent
+            if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+            return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+            }
+            
         $administrateur->utilisateur->update($request->only([
-            'nom', 'prenom', 'email', 'numTelephone', 
-            'dateNaissance', 'lieuNaissance', 
-            'wilayaNaissance', 'adresse', 'sexe', 
-            'nationalite'
+            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
+            'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
+            'adresse','wilaya',
+            'sexe', 'nationalite'
         ]));
 
         return response()->json(['message' => 'Administrateur mis à jour avec succès'], 200);
