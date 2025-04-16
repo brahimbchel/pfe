@@ -74,13 +74,16 @@ const EmployersList: React.FC = () => {
   });
 
   const handleAjouteVisite = (id: number) => {
-    // console.log(`Delete Employer with id: ${id}`);
     navigate(`/admin/rendez-vous/ajoute-rendez-vous/${id}`)
   };
 
   const handleUpdate = (id: number) => {
-    // console.log(`Update Employer with id: ${id}`);
     navigate(`/admin/employers/update/${id}`)
+  };
+
+  
+  const handleEmployeDetail = (id: number) => {
+    navigate(`/admin/employers/detailes/${id}`)
   };
 
   if (isLoading) {
@@ -105,12 +108,8 @@ const EmployersList: React.FC = () => {
             <th className="p-3 text-left">Matricule</th>
             <th className="p-3 text-left">Nom</th>
             <th className="p-3 text-left">Prénom</th>
-            <th className="p-3 text-left">Sexe</th>
-            <th className="p-3 text-left">Date de Naissance</th>
-            <th className="p-3 text-left">Lieu de Naissance</th>
-            <th className="p-3 text-left">Adresse</th>
-            <th className="p-3 text-left">Téléphone</th>
-            <th className="p-3 text-left">Email</th>
+            <th className="p-3 text-left">Post</th>
+            <th className="p-3 text-left">Departement</th>
             <th className="p-3 text-left">Action</th>
           </tr>
         </thead>
@@ -121,6 +120,7 @@ const EmployersList: React.FC = () => {
                 key={employer.id}
                 employer={employer}
                 ajouteVisite={handleAjouteVisite}
+                moreDetailes={handleEmployeDetail}
                 onUpdate={handleUpdate}
               />
             ))}

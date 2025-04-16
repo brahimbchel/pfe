@@ -3,23 +3,26 @@ import MedcinsRow from "./MedcinsRow";
 import MedcinsFilters from "./MedcinsFilters";
 import { useNavigate } from "react-router";
 
+
 type Medcin = {
-    id: string;
-    nom: string,
-    prenom: string,
-    email: string,
-    numTelephone: string,
-    dateNaissance: string,
-    lieuNaissance: string,
-    wilayaNaissance: string,
-    sexe: string,
-    nationalite: string,
-    specialite: string,
-    adresse: string,
-    adresseService: string,
-    created_at: string,
-    updated_at: string
-  };
+  id: string;
+  nom: string,
+  prenom: string,
+  specialite: string,
+  adresseService: string,
+
+
+  // email: string,
+  // numTelephone: string,
+  // dateNaissance: string,
+  // lieuNaissance: string,
+  // wilayaNaissance: string,
+  // sexe: string,
+  // nationalite: string,
+  // adresse: string,
+  // created_at: string,
+  // updated_at: string
+};
 
 const MedcinsList: React.FC = () => {
   const navigate = useNavigate();
@@ -64,8 +67,9 @@ const MedcinsList: React.FC = () => {
         });
 
 
-        const handleDelete = (id: string) => {
-            console.log(`Delete Employer with id: ${id}`);
+        const handleMoreDetailes = (id: string) => {
+            // console.log(`Delete Employer with id: ${id}`);
+            navigate(`/admin/medcin/detailes/${id}`) 
           };
         
         const handleUpdate = (id: string) => {
@@ -95,8 +99,8 @@ const MedcinsList: React.FC = () => {
                   <th className="p-3 text-left">Matricule</th>
                   <th className="p-3 text-left">specialite</th> 
                   <th className="p-3 text-left">adresse service</th>
-                  <th className="p-3 text-left">Email</th>
-                  <th className="p-3 text-left">Phone</th>
+                  {/* <th className="p-3 text-left">Email</th>
+                  <th className="p-3 text-left">Phone</th> */}
                   <th className="p-3 text-left">Action</th>
                 </tr>
               </thead>
@@ -105,7 +109,7 @@ const MedcinsList: React.FC = () => {
                   <MedcinsRow
                     key={medcin.id}
                     medcin={medcin}
-                    onDelete={handleDelete}
+                    moreDetailes={handleMoreDetailes}
                     onUpdate={handleUpdate}
                   />
                 ))}

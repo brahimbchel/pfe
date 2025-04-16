@@ -24,6 +24,8 @@ import EmployerForm from './components/admin-employer/EmployerForm';
 import UpdateMedcinForm from './components/admin-medcin/UpdateMedcinForm';
 import UpdateEmployerForm from './components/admin-employer/UpdateEmployerForm';
 import UpdateRendezVousForm from './components/admin-rendez-vous/UpdateRendezVousForm';
+import MedcinDetails from './components/admin-medcin/MedcinDetails';
+import EmployeDetails from './components/admin-employer/EmployeDetails';
 
 function ProtectedRoute({ element }: { element: React.ReactElement }) {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -57,12 +59,14 @@ function App() {
 
           <Route path="medcin">
             <Route index element={<Medcins />} />
+            <Route path="detailes/:medcinId" element={<MedcinDetails /> } />
             <Route path="ajoute-medcin" element={<MedcinsForm /> } />
             <Route path="update/:id" element={<UpdateMedcinForm />} />
           </Route>
 
           <Route path="employers">
             <Route index element={<Employers />} />
+            <Route path="detailes/:employeId" element={<EmployeDetails /> } />
             <Route path="ajoute-employer" element={<EmployerForm /> } />
             <Route path="update/:id" element={<UpdateEmployerForm />} />
           </Route>

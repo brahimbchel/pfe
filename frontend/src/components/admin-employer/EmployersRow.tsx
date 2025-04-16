@@ -5,41 +5,22 @@ import { useState } from "react";
 type Employer = {
   id: number;
   matricule: string;
-  fonction: string;
   poste: string;
   departement: string;
-
-  situationFamille: string;
-  groupeSanguin: string;
-  rh: string;
-  formationScolaire: string;
-  formationProfessionnelle: string;
-  qualificationProfessionnelle: string;
-  numSecuSocial: string;
   statutEmploye: string;
-  created_at: string;
-  updated_at: string;
-
   nom: string;
   prenom: string;
-  email: string;
-  numTelephone: string;
-  dateNaissance: string;
-  lieuNaissance: string;
-  wilayaNaissance: string;
-  adresse: string;
-  sexe: string;
-  nationalite: string;
 };
 
 interface EmployerRowProps {
   employer: Employer;
   ajouteVisite: (id: number) => void;
   onUpdate: (id: number) => void;
+  moreDetailes: (id: number) => void;
 }
 
 
-const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUpdate }) => {
+const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUpdate, moreDetailes }) => {
   const [showActions, setShowActions] = useState(false);
 
   const toggleActions = () => setShowActions((prev) => !prev);
@@ -49,13 +30,9 @@ const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUp
   <td className="p-3">{employer.matricule}</td>
   <td className="p-3">{employer.nom}</td>
   <td className="p-3">{employer.prenom}</td>
-  <td className="p-3">{employer.sexe}</td>
-  <td className="p-3">{employer.dateNaissance}</td>
-  <td className="p-3">{employer.lieuNaissance}</td>
-  <td className="p-3">{employer.adresse}</td>
-  <td className="p-3">{employer.numTelephone}</td>
-  <td className="p-3">{employer.email}</td>
-  {/* <td className="p-3"> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">{employer.statutEmploye}</span></td> */}
+  <td className="p-3">{employer.poste}</td>
+  <td className="p-3">{employer.departement}</td>
+  <td className="p-3"> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">{employer.statutEmploye}</span></td>
       
 
       <td className="p-3 relative">
@@ -82,11 +59,24 @@ const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUp
                 ajouteVisite(employer.id);
                 setShowActions(false);
               }}
-              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
             >
               <span className="flex items-center gap-2">
                 {/* <Trash2Icon className="w-4 h-4" /> */}
                 Ajoute Rendez-Vous
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                moreDetailes(employer.id);
+                setShowActions(false);
+              }}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                {/* <Trash2Icon className="w-4 h-4" /> */}
+                Details
               </span>
             </button>
 
