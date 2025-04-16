@@ -58,7 +58,7 @@ const RendezVousList: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="p-3 text-left text-gray-700">Nom</th>
-              <th className="p-3 text-left text-gray-700">Matricule</th>
+              {/* <th className="p-3 text-left text-gray-700">CMS id</th> */}
               <th className="p-3 text-left text-gray-700">Date/Heure</th>
               <th className="p-3 text-left text-gray-700">Médecin</th>
               <th className="p-3 text-left text-gray-700">Spécialité</th>

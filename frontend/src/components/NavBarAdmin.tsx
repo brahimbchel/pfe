@@ -11,7 +11,7 @@ export default function Navbar() {
       {/* Top Navbar */}
       <nav className="bg-gray-900 text-white p-4 flex justify-between items-center md:px-10 shadow-lg">
 
-        <Link to="/" className={`flex items-center space-x-2 `}>
+        <Link to="/admin/dashboard" className={`flex items-center space-x-2 `}>
           <h2 className="text-2xl font-bold tracking-wide">SNTF</h2>
         </Link>
         <button

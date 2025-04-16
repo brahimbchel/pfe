@@ -18,14 +18,29 @@ interface Props {
   onUpdate: (id: string) => void;
 }
 
+
 const RendezVousRow: React.FC<Props> = ({ rendezVous, onDelete, onUpdate }) => {
   const [showActions, setShowActions] = useState(false);
   const toggleActions = () => setShowActions((prev) => !prev);
 
+  // till get the cms/:id route from backend
+  // const [cms, setCms] = useState('');
+
+  // // get cms name from cms_id
+  // useEffect(() => {
+  //   const getCmsById = async () => {
+  //     const res = await fetch(`http://127.0.0.1:8000/api/cms/${cms_id}`)
+  //     const data = await res.json()
+
+  //     setCms(data)
+  //   }
+  // }, [rendezVous.cms_id])
+
+
   return (
     <tr className="border-t hover:bg-gray-50">
       <td className="p-3">{rendezVous.employe_nom}</td>
-      <td className="p-3">{rendezVous.cms_id}</td>
+      {/* <td className="p-3">{cms.nomCMS}</td> */}
       <td className="p-3">
         {new Date(rendezVous.dateVisite).toLocaleString('fr-FR', {
           day: '2-digit',

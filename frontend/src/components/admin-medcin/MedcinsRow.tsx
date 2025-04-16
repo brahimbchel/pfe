@@ -7,18 +7,6 @@ type Medcin = {
   prenom: string,
   specialite: string,
   adresseService: string,
-
-
-  // email: string,
-  // numTelephone: string,
-  // dateNaissance: string,
-  // lieuNaissance: string,
-  // wilayaNaissance: string,
-  // sexe: string,
-  // nationalite: string,
-  // adresse: string,
-  // created_at: string,
-  // updated_at: string
 };
 
   interface MedcinRowProps {
@@ -40,8 +28,6 @@ const MedcinsRow: React.FC<MedcinRowProps> = ({ medcin, moreDetailes, onUpdate }
             <td className="p-3">{medcin.id}</td>
             <td className="p-3">{medcin.specialite}</td> 
             <td className="p-3">{medcin.adresseService}</td>
-            {/* <td className="p-3">{medcin.email}</td>
-            <td className="p-3">{medcin.numTelephone}</td> */}
 
             <td className="p-3 relative">
         <button onClick={toggleActions} className="focus:outline-none">

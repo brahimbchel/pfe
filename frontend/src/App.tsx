@@ -26,6 +26,9 @@ import UpdateEmployerForm from './components/admin-employer/UpdateEmployerForm';
 import UpdateRendezVousForm from './components/admin-rendez-vous/UpdateRendezVousForm';
 import MedcinDetails from './components/admin-medcin/MedcinDetails';
 import EmployeDetails from './components/admin-employer/EmployeDetails';
+import AdminHome from './components/admin/AdminHome';
+import CMSPage from './components/admin/CMSPage';
+import SpecialitesPage from './components/admin/SpecialitesPage';
 
 function ProtectedRoute({ element }: { element: React.ReactElement }) {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -50,6 +53,11 @@ function App() {
 
       <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
         <Route path="admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminHome /> } />
+          <Route path="cms" element={<CMSPage />} />
+          <Route path="specialites" element={<SpecialitesPage />} />
+
+
           <Route path="rendez-vous">
             <Route index element={<RendezVous />} />
             {/* <Route path="ajoute-rendez-vous" element={<RendezVousForm />} /> */}
