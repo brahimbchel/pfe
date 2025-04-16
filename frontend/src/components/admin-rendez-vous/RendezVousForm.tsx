@@ -1,183 +1,197 @@
+
 import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 type FormValues = {
-  matricule: string;
-  nom: string;
-  datetime: Date
-  medcin: string;
+  EmployeId: string;
+  MedecinId: string;
+  cms_id: string;
   type: string;
+  dateVisite: Date;
 };
 
 const schema = yup.object({
-  matricule: yup.string().required('Matricule est requis'),
-  nom: yup.string().required('Nom est requis'),
-  datetime: yup.date()
+  EmployeId: yup.string().required('Employé est requis'),
+  MedecinId: yup.string().required('Médecin est requis'),
+  cms_id: yup.string().required('CMS est requis'),
+  type: yup.string().required('Type de consultation est requis'),
+  dateVisite: yup.date()
     .required('Date et heure sont requises')
     .min(new Date(), 'La date ne peut pas être dans le passé')
-    .typeError('Veuillez entrer une date et heure valides'),
-  medcin: yup.string().required('Médecin est requis'),
-  type: yup.string().required('Type de consultation est requis'),
-})
+    .typeError('Date invalide'),
+});
 
 const RendezVousForm = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [medcinsOptions, setMedcinsOptions] = useState<any[]>([]);
+  const [cmsOptions, setCmsOptions] = useState<any[]>([]);
+
+  const { employeId } = useParams();
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
-      matricule: "",
-      nom: "",
-      datetime: undefined,
-      medcin: "",
-      type: "",
-    },
+      EmployeId: employeId || "",
+      // other fields...
+    }
   });
+
+
+  useEffect(() => {
+    const fetchMedcins = async () => {
+      const res = await fetch("http://127.0.0.1:8000/api/medecins");
+      const data = await res.json();
+      setMedcinsOptions(data);
+    };
+
+    const fetchCms = async () => {
+      const res = await fetch("http://127.0.0.1:8000/api/cms");
+      const data = await res.json();
+      setCmsOptions(data);
+    };
+
+    fetchMedcins();
+    fetchCms();
+  }, []);
+
+  const typeOptions = [
+    'Admission', 'Periodique', 'Spontané', 'Reprise',
+    'Contrôle', 'AccidentDeTravail', 'ContreVisite', 'Réintégration'
+  ];
+  
+  function formatDateToMySQL(date: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+  
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1); // Months are 0-indexed
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form submitted:', data);
-      reset();
-      navigate('/admin');
+
+      const formattedDate = formatDateToMySQL(data.dateVisite);
+      // console.log("1 - ", data.dateVisite)  // Fri Apr 18 2025 10:00:00 GMT+0100 (Central European Standard Time)
+      // console.log("2 - ", formattedDate)    // 2025-04-18 10:00:00
+
+      const response = await fetch("http://127.0.0.1:8000/api/visites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          ...data,
+          EmployeId: employeId,
+          dateVisite: formattedDate
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erreur API:", errorData);
+      } else {
+        // console.log("Rendez-vous créé:", data);
+        reset();
+        navigate("/admin/rendez-vous");
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const doctorOptions = [
-    { value: 'dr1', label: 'Dr. Sophie Martin - Cardiologie' },
-    { value: 'dr2', label: 'Dr. Jean Dupont - Dermatologie' },
-    { value: 'dr3', label: 'Dr. Marie Curie - Radiologie' },
-  ];
-
-  const typeOptions = [
-    'Consultation générale',
-    'Suivi de traitement',
-    'Urgence',
-    'Contrôle annuel'
-  ];
-
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="bg-white p-8 rounded-xl shadow-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Nouveau Rendez-Vous Médical</h2>
-        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Nouveau Rendez-Vous</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Matricule
-              </label>
+            {/* <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Employé (ID)</label>
               <input
-                {...register("matricule")}
-                className={`input ${errors.matricule ? 'input-error' : ''}`}
-                placeholder="Entrez votre matricule"
+                {...register("EmployeId")}
+                className={`input ${errors.EmployeId ? 'input-error' : ''}`}
+                placeholder="Entrez l'identifiant de l'employé"
               />
-              {errors.matricule && (
-                <p className="text-red-500 text-sm mt-1">{errors.matricule.message}</p>
-              )}
-            </div>
+              {errors.EmployeId && <p className="text-red-500 text-sm mt-1">{errors.EmployeId.message}</p>}
+            </div> */}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nom complet
-              </label>
-              <input
-                {...register("nom")}
-                className={`input ${errors.nom ? 'input-error' : ''}`}
-                placeholder="Entrez votre nom complet"
-              />
-              {errors.nom && (
-                <p className="text-red-500 text-sm mt-1">{errors.nom.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date et heure du rendez-vous
-              </label>
-              <input
-                type="datetime-local"
-                {...register("datetime", { valueAsDate: true })}
-                className={`input ${errors.datetime ? 'input-error' : ''}`}
-                min={new Date().toISOString().slice(0, 16)}
-              />
-              {errors.datetime && (
-                <p className="text-red-500 text-sm mt-1">{errors.datetime.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Médecin / Spécialité
-              </label>
-              <select
-                {...register("medcin")}
-                className={`input ${errors.medcin ? 'input-error' : ''}`}
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-2">Médecin</label>
+              <select {...register("MedecinId")} className={`input ${errors.MedecinId ? 'input-error' : ''}`}>
                 <option value="">Sélectionnez un médecin</option>
-                {doctorOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                {medcinsOptions.map(m => (
+                  <option key={m.id} value={m.id}>
+                    {m.nom} {m.prenom} - {m.specialite}
                   </option>
                 ))}
               </select>
-              {errors.medcin && (
-                <p className="text-red-500 text-sm mt-1">{errors.medcin.message}</p>
-              )}
+              {errors.MedecinId && <p className="text-red-500 text-sm mt-1">{errors.MedecinId.message}</p>}
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Type de consultation
-              </label>
-              <select
-                {...register("type")}
-                className={`input ${errors.type ? 'input-error' : ''}`}
-              >
-                <option value="">Sélectionnez le type</option>
-                {typeOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
+              <label className="block text-sm font-medium text-gray-700 mb-2">CMS</label>
+              <select {...register("cms_id")} className={`input ${errors.cms_id ? 'input-error' : ''}`}>
+                <option value="">Sélectionnez un CMS</option>
+                {cmsOptions.map(cms => (
+                  <option key={cms.id} value={cms.id}>{cms.nomCMS}</option>
                 ))}
               </select>
-              {errors.type && (
-                <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
-              )}
+              {errors.cms_id && <p className="text-red-500 text-sm mt-1">{errors.cms_id.message}</p>}
             </div>
+
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Date et heure de la visite</label>
+              <input
+                type="datetime-local"
+                {...register("dateVisite", { valueAsDate: true })}
+                className={`input ${errors.dateVisite ? 'input-error' : ''}`}
+                min={new Date().toISOString().slice(0, 16)}
+              />
+              {errors.dateVisite && <p className="text-red-500 text-sm mt-1">{errors.dateVisite.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Type de consultation</label>
+              <select {...register("type")} className={`input ${errors.type ? 'input-error' : ''}`}>
+                <option value="">Sélectionnez un type</option>
+                {typeOptions.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>}
+            </div>
+
           </div>
 
-          <div className="flex justify-end gap-3 mt-8">
+          <div className="flex justify-end gap-4">
             <button
               type="button"
               onClick={() => navigate(-1)}
+              className="btn-secondary"
               disabled={isSubmitting}
-              className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg border border-gray-400 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
             >
               Annuler
             </button>
 
             <button
               type="submit"
+              className="btn-primary"
               disabled={isSubmitting}
-              className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
             >
-              {isSubmitting ? (
-                'Envoi en cours... '
-              ) : (
-                'Confirmer le rendez-vous '
-              )}
+              {isSubmitting ? "Envoi..." : "Créer le rendez-vous"}
             </button>
           </div>
-
         </form>
       </div>
     </div>
@@ -185,3 +199,4 @@ const RendezVousForm = () => {
 };
 
 export default RendezVousForm;
+

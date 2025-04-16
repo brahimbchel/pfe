@@ -50,7 +50,8 @@ function App() {
         <Route path="admin" element={<AdminLayout />}>
           <Route path="rendez-vous">
             <Route index element={<RendezVous />} />
-            <Route path="ajoute-rendez-vous" element={<RendezVousForm />} />
+            {/* <Route path="ajoute-rendez-vous" element={<RendezVousForm />} /> */}
+            <Route path="ajoute-rendez-vous/:employeId" element={<RendezVousForm />} />
             <Route path="update/:id" element={<UpdateRendezVousForm />} />
           </Route>
 

@@ -73,8 +73,9 @@ const EmployersList: React.FC = () => {
     return postMatch
   });
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete Employer with id: ${id}`);
+  const handleAjouteVisite = (id: number) => {
+    // console.log(`Delete Employer with id: ${id}`);
+    navigate(`/admin/rendez-vous/ajoute-rendez-vous/${id}`)
   };
 
   const handleUpdate = (id: number) => {
@@ -119,7 +120,7 @@ const EmployersList: React.FC = () => {
               <EmployersRow
                 key={employer.id}
                 employer={employer}
-                onDelete={handleDelete}
+                ajouteVisite={handleAjouteVisite}
                 onUpdate={handleUpdate}
               />
             ))}

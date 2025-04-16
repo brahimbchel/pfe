@@ -8,8 +8,8 @@ const RendezVous = () => {
       <PageHeaderAdmin
         title="Liste des rendez-vous"
         description="Gestion des rendez-vous médicaux"
-        buttonText="Créer un Rendez-Vous"
-        buttonLink="/admin/rendez-vous/ajoute-rendez-vous"
+        buttonText=""
+        buttonLink=""
       />
 
       <RendezVousList />

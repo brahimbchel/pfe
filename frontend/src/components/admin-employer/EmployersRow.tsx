@@ -1,6 +1,4 @@
-// import React from 'react'
-
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { useState } from "react";
 
 
@@ -36,12 +34,12 @@ type Employer = {
 
 interface EmployerRowProps {
   employer: Employer;
-  onDelete: (id: number) => void;
+  ajouteVisite: (id: number) => void;
   onUpdate: (id: number) => void;
 }
 
 
-const EmployersRow: React.FC<EmployerRowProps> = ({ employer, onDelete, onUpdate }) => {
+const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUpdate }) => {
   const [showActions, setShowActions] = useState(false);
 
   const toggleActions = () => setShowActions((prev) => !prev);
@@ -81,14 +79,14 @@ const EmployersRow: React.FC<EmployerRowProps> = ({ employer, onDelete, onUpdate
 
             <button
               onClick={() => {
-                onDelete(employer.id);
+                ajouteVisite(employer.id);
                 setShowActions(false);
               }}
               className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
             >
               <span className="flex items-center gap-2">
-                <Trash2Icon className="w-4 h-4" />
-                Delete
+                {/* <Trash2Icon className="w-4 h-4" /> */}
+                Ajoute Rendez-Vous
               </span>
             </button>
 
