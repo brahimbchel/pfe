@@ -104,6 +104,7 @@ const EmployersForm = () => {
   const onSubmit: SubmitHandler<EmployerFormValues> = async (data) => {
     setIsSubmitting(true);
     try {
+      console.log(JSON.stringify(data))
       const response = await fetch("http://127.0.0.1:8000/api/employes/", {
         method: "POST",
         headers: {
