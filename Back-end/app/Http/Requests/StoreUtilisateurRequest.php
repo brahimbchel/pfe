@@ -30,13 +30,13 @@ class StoreUtilisateurRequest extends FormRequest
             'email' => 'required|email|unique:utilisateurs,email',
             'numTelephone' => 'required|unique:utilisateurs,numTelephone|regex:/^[0-9]{10}$/',
             'motDePasse' => 'required|string|min:8',
-            'dateNaissance' => 'required|date',
-            'lieuNaissance' => 'required|string|max:255',
-            'wilayaNaissance' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
+            'dateNaissance' => 'nullable|date',
+            'lieuNaissance' => 'nullable|string|max:255',
+            'wilayaNaissance' => 'nullable|in:' . implode(',', WilayaEnum::getAllWilayas()),
             'sexe' => 'required|in:masculin,féminin',
-            'adresse' => 'required|string|max:255',
-            'wilaya' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
-            'nationalite' => 'required|string|max:255',
+            'adresse' => 'nullable|string|max:255',
+            'wilaya' => 'nullable|in:' . implode(',', WilayaEnum::getAllWilayas()),
+            'nationalite' => 'nullable|string|max:255',
         ];
     }
 }

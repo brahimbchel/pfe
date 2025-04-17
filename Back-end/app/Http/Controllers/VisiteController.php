@@ -142,7 +142,7 @@ use Illuminate\Support\Facades\Validator;
             // Formatage de la réponse
             $response = $visites->map(function ($visite) {
                 return [
-                   'id' => $visite->id,
+                'id' => $visite->id,
                 'dateVisite' => $visite->dateVisite,
                 'type' => $visite->type,
                 'cms_id' => $visite->cms_id,

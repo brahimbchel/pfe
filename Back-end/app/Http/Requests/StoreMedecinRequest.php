@@ -24,7 +24,7 @@ class StoreMedecinRequest extends FormRequest
         return [
             'utilisateur_id' => 'required|exists:utilisateurs,id',
             'typeSpecialite_id' => 'required|exists:type_specialites,id',
-            'adresseService' => 'required|string|max:255',
+            'adresseService' => 'nullable|string|max:255',
         ];
     }
 }
