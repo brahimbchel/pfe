@@ -28,12 +28,22 @@ class StoreUtilisateurRequest extends FormRequest
             'email' => 'required|email|unique:utilisateurs,email',
             'numTelephone' => 'required|unique:utilisateurs,numTelephone|regex:/^[0-9]{10}$/',
             'motDePasse' => 'required|string|min:8',
+<<<<<<< HEAD
             'dateNaissance' => 'required|date',
             'lieuNaissance' => 'required|string|max:255',
             'wilayaNaissance' => 'required|in:' . implode(',', WilayaEnum::getAllWilayas()),
             'adresse' => 'required|string|max:255',
             'sexe' => 'required|in:masculin,féminin',
             'nationalite' => 'required|string|max:255',
+=======
+            'dateNaissance' => 'nullable|date',
+            'lieuNaissance' => 'nullable|string|max:255',
+            'wilayaNaissance' => 'nullable|in:' . implode(',', WilayaEnum::getAllWilayas()),
+            'sexe' => 'required|in:masculin,féminin',
+            'adresse' => 'nullable|string|max:255',
+            'wilaya' => 'nullable|in:' . implode(',', WilayaEnum::getAllWilayas()),
+            'nationalite' => 'nullable|string|max:255',
+>>>>>>> origin/Back-end-main
         ];
     }
 }
