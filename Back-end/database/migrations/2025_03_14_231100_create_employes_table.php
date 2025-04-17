@@ -23,7 +23,6 @@ class CreateEmployesTable extends Migration
         $table->string('formationProfessionnelle');
         $table->string('qualificationProfessionnelle');
         $table->enum('serviceNational', ['Accompli', 'Dispensé', 'Inapte']);
-        $table->enum('statutEmploye', ['actif', 'inactif'])->default('actif');
         $table->timestamps();
         
         $table->foreign('utilisateur_id')->references('id')->on('utilisateurs')->onDelete('cascade');

@@ -21,16 +21,17 @@ class EmployeController extends Controller
 
         // Transformer la réponse pour fusionner les attributs 
         $formattedEmployes = $employes->map(function ($employe) {
-            // Créer un tableau avec les attributs de l'employé
+            
             $data = $employe->only([
                 'id', 'matricule', 'poste', 
-                'departement','statutEmploye'
+                'departement'
             ]);
 
             // Ajouter les attributs de l'utilisateur
             $data['nom'] = $employe->utilisateur->nom;
             $data['prenom'] = $employe->utilisateur->prenom;
-            // Retourner les données sans l'objet utilisateur
+            $data['statut'] = $employe->utilisateur->statut;
+            
             return $data;
         });
 
@@ -59,7 +60,7 @@ class EmployeController extends Controller
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
-            'nationalite'
+            'nationalite', 'statut'
         ]), [
             'motDePasse' => bcrypt($request->motDePasse),
             'nomConjoint' => $request->nomConjoint ?? null  // Add this line to ensure nomConjoint is either the provided value or null
@@ -70,7 +71,7 @@ class EmployeController extends Controller
             'departement', 'situationFamille', 
             'groupeSanguin', 'rh', 'formationScolaire',
             'formationProfessionnelle', 'qualificationProfessionnelle', 
-            'numSecuSocial', 'serviceNational', 'statutEmploye'
+            'numSecuSocial', 'serviceNational'
         ]), ['utilisateur_id' => $utilisateur->id]));
 
         $dossierMedical = DossierMedical::create([
@@ -116,7 +117,7 @@ class EmployeController extends Controller
             'qualificationProfessionnelle' => $employe->qualificationProfessionnelle,
             'numSecuSocial' => $employe->numSecuSocial,
             'serviceNational' => $employe->serviceNational,
-            'statutEmploye' => $employe->statutEmploye,
+            'statut' => $employe->utilisateur->statut,
             'created_at' => $employe->created_at,
             'updated_at' => $employe->updated_at,
         ];
@@ -146,7 +147,7 @@ class EmployeController extends Controller
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse','wilaya', 'sexe', 
-            'nationalite'
+            'nationalite', 'statut'
         ]));
     
         // Mettre à jour les informations de l'employé
@@ -155,7 +156,7 @@ class EmployeController extends Controller
             'departement', 'situationFamille', 
             'groupeSanguin', 'rh', 'formationScolaire', 
             'formationProfessionnelle', 'qualificationProfessionnelle', 
-            'numSecuSocial', 'statutEmploye'
+            'numSecuSocial'
         ]));
     
         return response()->json(['message' => 'Employé modifié avec succès.'], 200);
@@ -163,17 +164,39 @@ class EmployeController extends Controller
 
     //-----------SUPPRISSION D'UN EMPLOYE --------------------------------------------------
     
-    public function destroy($id): JsonResponse
+    public function block($id): JsonResponse
     {
         $employe = Employe::with('utilisateur')->findOrFail($id);
 
-        // Supprimer l'utilisateur associé
-        $employe->utilisateur->delete();
-    
-        // Supprimer l'employé
-        $employe->delete();
-    
-        // Retourner une réponse de succès
-        return response()->json(['message' => 'Employé supprimé avec succès.'], 200);
+        // Vérifier si l'employé est déjà bloqué
+        if ($employe->utilisateur->blocked_at !== null) {
+            return response()->json(['error' => 'Cet employé est déjà bloqué.'], 422);
+        }
+
+        // Bloquer l'employé
+        $employe->utilisateur->update([
+            'blocked_at' => now(),
+            'statut' => 'bloqué',
+        ]);
+
+        return response()->json(['message' => 'Employé bloqué avec succès.'], 200);
+    }
+
+    public function unblock($id): JsonResponse
+    {
+        $employe = Employe::with('utilisateur')->findOrFail($id);
+
+        // Vérifier si l'employé est bloqué
+        if ($employe->utilisateur->blocked_at === null) {
+            return response()->json(['error' => 'Cet employé n\'est pas bloqué.'], 422);
+        }
+
+        // Débloquer l'employé
+        $employe->utilisateur->update([
+            'blocked_at' => null,
+            'statut' => 'actif',
+        ]);
+
+        return response()->json(['message' => 'Employé débloqué avec succès.'], 200);
     }
 }

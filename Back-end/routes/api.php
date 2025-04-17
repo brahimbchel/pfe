@@ -13,12 +13,18 @@ use Illuminate\Support\Facades\Route;
 
 // Routes pour gest. des employés
 Route::apiResource('employes', EmployeController::class);
-
-// Routes pour gest. des administrateurs
-Route::apiResource('administrateurs', AdministrateurController::class);
+Route::post('employes/{id}/block', [EmployeController::class, 'block'])->name('employes.block');
+Route::post('employes/{id}/unblock', [EmployeController::class, 'unblock'])->name('employes.unblock');
 
 // Routes pour gest. des medcins
 Route::apiResource('medecins', MedecinController::class);
+Route::post('medecins/{id}/block', [MedecinController::class, 'block'])->name('medecins.block');
+Route::post('medecins/{id}/unblock', [MedecinController::class, 'unblock'])->name('medecins.unblock');
+
+// Routes pour gest. des administrateurs
+Route::apiResource('administrateurs', AdministrateurController::class);
+Route::post('administrateurs/{id}/block', [AdministrateurController::class, 'block'])->name('administrateurs.block');
+Route::post('administrateurs/{id}/unblock', [AdministrateurController::class, 'unblock'])->name('administrateurs.unblock');
 
 // Routes pour gest. des documents
 Route::apiResource('documents', DocumentController::class);

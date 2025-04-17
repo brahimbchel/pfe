@@ -8,25 +8,21 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
-    {
-        Schema::table('utilisateurs', function (Blueprint $table) {
-            $table->string('wilaya')->after('adresse');
-        });
-    }
+{
+    Schema::table('utilisateurs', function (Blueprint $table) {
+        $table->timestamp('blocked_at')->nullable(); // Champ pour le blocage
+    });
+}
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('utilisateurs', function (Blueprint $table) {
-            $table->dropColumn('wilaya');
+            $table->dropColumn('blocked_at');
         });
     }
 };

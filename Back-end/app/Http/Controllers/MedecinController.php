@@ -24,6 +24,7 @@ class MedecinController extends Controller
             'prenom' => $medecin->utilisateur->prenom,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
             'adresseService' => $medecin->adresseService,
+            'statut' => $medecin->utilisateur->statut
             ];
         });
 
@@ -55,7 +56,7 @@ class MedecinController extends Controller
                 'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
                 'wilayaNaissance', 'adresse','wilaya', 'sexe', 
-                'nationalite'
+                'nationalite','statut'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
             $medecin = Medecin::create([
@@ -87,6 +88,7 @@ class MedecinController extends Controller
             'wilaya' => $medecin->utilisateur->wilaya,
             'sexe' => $medecin->utilisateur->sexe,
             'nationalite' => $medecin->utilisateur->nationalite,
+            'statut' => $medecin->utilisateur->statut,
             'specialite' => $medecin->TypeSpecialite->NomSpecialite,
             'adresse' => $medecin->utilisateur->adresse,
             'adresseService' => $medecin->adresseService,
@@ -120,7 +122,7 @@ class MedecinController extends Controller
         $medecin->utilisateur->update($request->only([
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone',
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
-            'adresse','wilaya',
+            'adresse','wilaya','statut',
             'sexe', 'nationalite'
         ]));
 
@@ -129,18 +131,44 @@ class MedecinController extends Controller
             'typeSpecialite_id' => $typeSpecialite->id
         ]);
 
-        return response()->json(['message' => 'Médecin mis à jour avec succès'], 200);
+        return response()->json(['message' => 'Médecin mis à jour'], 200);
     }
 
-    //-----------SUPPRESSION D'UN MEDECIN ------------------------------------------------
+        //-----------BLOCGE D'UN ADMIN -----------------------------------------------------
 
-    public function destroy($id): JsonResponse
+    public function block($id): JsonResponse
     {
-        $medecin = Medecin::with('utilisateur')->findOrFail($id);
-
-        $medecin->utilisateur->delete();
-        $medecin->delete();
-
-        return response()->json(['message' => 'Médecin supprimé avec succès.'], 200);
+            $medecin = Medecin::with('utilisateur')->findOrFail($id);
+        
+            // Vérifier si le médecin est déjà bloqué
+            if ($medecin->utilisateur->blocked_at !== null) {
+                return response()->json(['error' => 'Ce médecin est déjà bloqué.'], 422);
+            }
+        
+            // Bloquer le médecin
+            $medecin->utilisateur->update([
+                'blocked_at' => now(),
+                'statut' => 'bloqué',
+            ]);
+        
+            return response()->json(['message' => 'Médecin bloqué avec succès.'], 200);
+    }
+    
+    public function unblock($id): JsonResponse
+    {
+            $medecin = Medecin::with('utilisateur')->findOrFail($id);
+        
+            // Vérifier si le médecin est bloqué
+            if ($medecin->utilisateur->blocked_at === null) {
+                return response()->json(['error' => 'Ce médecin n\'est pas bloqué.'], 422);
+            }
+        
+            // Débloquer le médecin
+            $medecin->utilisateur->update([
+                'blocked_at' => null,
+                'statut' => 'actif',
+            ]);
+        
+            return response()->json(['message' => 'Médecin débloqué avec succès.'], 200);
     }
 }

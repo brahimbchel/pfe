@@ -22,7 +22,6 @@ class Employe extends Utilisateur
         'formationProfessionnelle',
         'qualificationProfessionnelle',
         'numSecuSocial',
-        'statutEmploye',
         'utilisateur_id',
     ];
 

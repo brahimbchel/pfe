@@ -25,6 +25,7 @@ return new class extends Migration
         $table->string('adresse');
         $table->string('sexe');
         $table->string('nationalite');
+        $table->enum('statut', ['actif', 'inactif', 'bloqué'])->default('actif');
         $table->timestamps();
     });
 }

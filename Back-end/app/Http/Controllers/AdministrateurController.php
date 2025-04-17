@@ -23,6 +23,7 @@ class AdministrateurController extends Controller
                 'prenom' => $administrateur->utilisateur->prenom,
                 'email' => $administrateur->utilisateur->email,
                 'numTelephone' => $administrateur->utilisateur->numTelephone,
+                'statut' => $administrateur->utilisateur->statut
             ];
         });
 
@@ -49,7 +50,7 @@ class AdministrateurController extends Controller
                 'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
                 'dateNaissance', 'lieuNaissance', 
                 'wilayaNaissance', 'adresse','wilaya', 'sexe', 
-                'nationalite'
+                'nationalite','statut'
             ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
             $administrateur = Administrateur::create([
@@ -79,6 +80,7 @@ class AdministrateurController extends Controller
             'wilaya' => $administrateur->utilisateur->wilaya,
             'sexe' => $administrateur->utilisateur->sexe,
             'nationalite' => $administrateur->utilisateur->nationalite,
+            'statut' => $administrateur->utilisateur->statut,
             'created_at' => $administrateur->created_at,
             'updated_at' => $administrateur->updated_at,
         ], 200);
@@ -101,20 +103,47 @@ class AdministrateurController extends Controller
         $administrateur->utilisateur->update($request->only([
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
-            'adresse','wilaya',
+            'adresse','wilaya','statut',
             'sexe', 'nationalite'
         ]));
 
         return response()->json(['message' => 'Administrateur mis à jour avec succès'], 200);
     }
 
-    //-----------SUPPRISSION D'UN ADMIN -----------------------------------------------------
-    public function destroy($id): JsonResponse
+    //-----------BLOCKAGE D'UN ADMIN -----------------------------------------------------
+    public function block($id): JsonResponse
     {
         $administrateur = Administrateur::with('utilisateur')->findOrFail($id);
-        $administrateur->utilisateur->delete();
-        $administrateur->delete();
-
-        return response()->json(['message' => 'Administrateur supprimé avec succès.'], 200);
+    
+        // Vérifier si l'administrateur est déjà bloqué
+        if ($administrateur->utilisateur->blocked_at !== null) {
+            return response()->json(['error' => 'Cet administrateur est déjà bloqué.'], 422);
+        }
+    
+        // Bloquer l'administrateur
+        $administrateur->utilisateur->update([
+            'blocked_at' => now(),
+            'statut' => 'bloqué',
+        ]);
+    
+        return response()->json(['message' => 'Administrateur bloqué avec succès.'], 200);
+    }
+    
+    public function unblock($id): JsonResponse
+    {
+        $administrateur = Administrateur::with('utilisateur')->findOrFail($id);
+    
+        // Vérifier si l'administrateur est bloqué
+        if ($administrateur->utilisateur->blocked_at === null) {
+            return response()->json(['error' => 'Cet administrateur n\'est pas bloqué.'], 422);
+        }
+    
+        // Débloquer l'administrateur
+        $administrateur->utilisateur->update([
+            'blocked_at' => null,
+            'statut' => 'actif',
+        ]);
+    
+        return response()->json(['message' => 'Administrateur débloqué avec succès.'], 200);
     }
 }

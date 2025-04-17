@@ -25,6 +25,8 @@ class Utilisateur extends Model
         'wilaya',
         'sexe',
         'nationalite',
+        'statut',
+        'blocked_at'
     ];
 
      // Méthode pour valider la wilaya
