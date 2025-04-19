@@ -7,7 +7,9 @@ use App\Models\Employe;
 use App\Models\DossierMedical;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Facades\DB;
+use App\Notifications\EmployeCreated;
+use App\Notifications\EmployeDeleted;
 
 class EmployeController extends Controller
 {
@@ -42,7 +44,7 @@ class EmployeController extends Controller
     public function store(Request $request): JsonResponse
     {
      // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
-     return \DB::transaction(function () use ($request) 
+     return DB::transaction(function () use ($request) 
      {
         // Si l'employé est masculin, forcer nomConjoint à null
         if ($request->sexe === 'masculin') {
@@ -78,7 +80,7 @@ class EmployeController extends Controller
             'aptitudeDeTravail' => 'apte', // Valeur par défaut
             'notes' => 'Dossier médical créé',
         ]);
-
+        $utilisateur->notify(new EmployeCreated($request->email, $request->motDePasse));
         return response()->json(['message' => 'Employé creé avec succès.'], 201);
         });
     }
@@ -172,7 +174,8 @@ class EmployeController extends Controller
     
         // Supprimer l'employé
         $employe->delete();
-    
+        if ($employe->utilisateur && $employe->utilisateur->email) {
+            $employe->utilisateur->notify(new EmployeDeleted($employe));}
         // Retourner une réponse de succès
         return response()->json(['message' => 'Employé supprimé avec succès.'], 200);
     }

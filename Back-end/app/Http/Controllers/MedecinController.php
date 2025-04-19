@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Utilisateur;
 use App\Models\Medecin;
 use App\Models\TypeSpecialite;
+use App\Notifications\MedecinCreated;
+use App\Notifications\MedecinDeleted;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +65,7 @@ class MedecinController extends Controller
                 'typeSpecialite_id' => $typeSpecialite->id,
                 'adresseService' => $request->adresseService,
             ]);
-        
+            $utilisateur->notify(new MedecinCreated($request->email, $request->motDePasse));
             return response()->json(['message' => 'Un est medecin créé avec succès'], 201);
     }
 
@@ -140,7 +142,8 @@ class MedecinController extends Controller
 
         $medecin->utilisateur->delete();
         $medecin->delete();
-
+        if ($medecin->utilisateur && $medecin->utilisateur->email) {
+            $medecin->utilisateur->notify(new MedecinDeleted($medecin));}
         return response()->json(['message' => 'Médecin supprimé avec succès.'], 200);
     }
 }

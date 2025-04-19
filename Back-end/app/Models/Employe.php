@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employe extends Utilisateur
 {
     use HasFactory;
+    
 
     protected $fillable = [
         'matricule',

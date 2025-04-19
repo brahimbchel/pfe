@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\WilayaEnum;
-
+use Illuminate\Notifications\Notifiable; 
 
 class Utilisateur extends Model
 {
     use HasFactory;
-
+    use Notifiable;
     protected $fillable = [
         'nom',
         'nomConjoint',

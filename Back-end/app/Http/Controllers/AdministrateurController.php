@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreAdministrateurRequest;
 use App\Models\Administrateur;
 use App\Models\Utilisateur;
+use App\Notifications\AdminCreated;
+use App\Notifications\AdminDeleted;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -55,7 +57,7 @@ class AdministrateurController extends Controller
             $administrateur = Administrateur::create([
                 'utilisateur_id' => $utilisateur->id,
             ]);
-
+            $utilisateur->notify(new AdminCreated($request->email, $request->motDePasse));
             return response()->json(['message' => 'Administrateur créé avec succès'], 201);
         });
     }
@@ -114,7 +116,8 @@ class AdministrateurController extends Controller
         $administrateur = Administrateur::with('utilisateur')->findOrFail($id);
         $administrateur->utilisateur->delete();
         $administrateur->delete();
-
+        if ($administrateur->utilisateur && $administrateur->utilisateur->email) {
+            $administrateur->utilisateur->notify(new AdminDeleted($administrateur));}
         return response()->json(['message' => 'Administrateur supprimé avec succès.'], 200);
     }
 }

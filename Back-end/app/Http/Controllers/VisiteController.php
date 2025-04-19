@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Employe;
 
 use App\Models\Visite;
 use App\Enums\TypesVisitesEnum;
+use App\Notifications\VisiteCreated;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,8 +29,15 @@ use Illuminate\Support\Facades\Validator;
                 ]);
         
                 // Création de la visite
-                Visite::create($validatedData);
-        
+                $visite = Visite::create($validatedData);
+                // 🔔 Envoi de notification à l’employé
+                 $employe = Employe::with('utilisateur')->find($request->EmployeId); // ⬅️
+                 $visite->load('medecin.utilisateur'); // ⬅️
+
+        if ($employe && $employe->utilisateur) {
+            $employe->utilisateur->notify(new VisiteCreated($visite, $employe)); // ⬅️
+        }
+
                 return response()->json([
                     'message' => 'Visite planifiée avec succès.',
                 ], 201);
