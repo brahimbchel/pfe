@@ -50,6 +50,8 @@ class MedecinController extends Controller
             $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erreur: ' . $e->getMessage()], 500);
         }
             // Créer l'utilisateur avant de créer le médecin
             $utilisateur = Utilisateur::create(array_merge($request->only([
@@ -112,29 +114,32 @@ class MedecinController extends Controller
         if ($request->sexe === 'féminin' && !$request->nomConjoint) {
             return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
         }
-        
-        try {
-            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+
+        // Vérifier si typeSpecialite est présent dans la requête
+        if ($request->has('typeSpecialite')) {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->first();
+
+            if (!$typeSpecialite) {
+                return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
+            }
         }
 
         $medecin->utilisateur->update($request->only([
             'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone',
             'dateNaissance', 'lieuNaissance', 'wilayaNaissance',
-            'adresse','wilaya','statut',
+            'adresse', 'wilaya', 'statut',
             'sexe', 'nationalite'
         ]));
 
         $medecin->update([
             'adresseService' => $request->adresseService,
-            'typeSpecialite_id' => $typeSpecialite->id
+            'typeSpecialite_id' => isset($typeSpecialite) ? $typeSpecialite->id : $medecin->typeSpecialite_id
         ]);
 
         return response()->json(['message' => 'Médecin mis à jour'], 200);
     }
 
-        //-----------BLOCGE D'UN ADMIN -----------------------------------------------------
+    //-----------BLOCAGE D'UN ADMIN -----------------------------------------------------
 
     public function block($id): JsonResponse
     {

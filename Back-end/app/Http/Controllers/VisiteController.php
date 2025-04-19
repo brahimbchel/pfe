@@ -53,11 +53,11 @@ use Illuminate\Support\Facades\Validator;
                 $typesVisite = implode(',', TypesVisitesEnum::getValues());
         
                 $validatedData = $request->validate([
-                    'dateVisite' => 'required|date',
-                    'MedecinId' => 'required|exists:medecins,id',
-                    'EmployeId' => 'required|exists:employes,id',
-                    'type' => 'required|in:' . $typesVisite,
-                    'cms_id' => 'required|exists:cms,id',
+                    'dateVisite' => 'date',
+                    'MedecinId' => 'exists:medecins,id',
+                    'EmployeId' => 'exists:employes,id',
+                    'type' => 'in:' . $typesVisite,
+                    'cms_id' => 'exists:cms,id',
                 ]);
         
                 $visite = Visite::findOrFail($id);
@@ -126,7 +126,7 @@ use Illuminate\Support\Facades\Validator;
                 'employe_prenom' => $visite->employe->utilisateur->prenom,
                 'employe_numTelephone' => $visite->employe->utilisateur->numTelephone,
                 'employe_departement' => $visite->employe->departement,
-                'employe_poste' => $visite->employe->utilisateur->poste,
+                'employe_poste' => $visite->employe->poste,
             ];
 
             return response()->json($response, 200);
@@ -151,7 +151,7 @@ use Illuminate\Support\Facades\Validator;
                 'employe_nom' => $visite->employe->utilisateur->nom,
                 'employe_prenom' => $visite->employe->utilisateur->prenom,
                 'employe_departement' => $visite->employe->departement,
-                'employe_poste' => $visite->employe->utilisateur->poste,
+                'employe_poste' => $visite->employe->poste,
                 ];
             });
     

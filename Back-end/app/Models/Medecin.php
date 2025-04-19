@@ -12,6 +12,7 @@ class Medecin extends Utilisateur
     protected $fillable = [
         'typeSpecialite_id',
         'utilisateur_id',
+        'adresseService'
     ];
 
     public function utilisateur()

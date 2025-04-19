@@ -40,49 +40,45 @@ class EmployeController extends Controller
         
     //-----------AJOUT D'UN EMPLOYE --------------------------------------------------------
 
-    public function store(Request $request): JsonResponse
-    {
-     // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
-     return \DB::transaction(function () use ($request) 
-     {
-        // Si l'employé est masculin, forcer nomConjoint à null
-        if ($request->sexe === 'masculin') {
-             $request->merge(['nomConjoint' => null]);
-        }
+    public function store(Request $request)
+{
+    // Si masculin, forcer nomConjoint à null
+    if ($request->sexe === 'masculin') {
+        $request->merge(['nomConjoint' => null]);
+    }
 
-         // Si l'employé est féminin, vérifier que nomConjoint est présent
-        if ($request->sexe === 'féminin' && !$request->nomConjoint) {
-             return response()->json(['error' => 'Le champ nomConjoint est requis pour les employées féminines.'], 422);
+    // Si féminin, vérifier que nomConjoint est présent
+    if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+        return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
+    }
+
+    // Utiliser une transaction
+    return DB::transaction(function () use ($request) {
+        // Vérifier le type de spécialité
+        try {
+            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
         }
 
         // Créer l'utilisateur
         $utilisateur = Utilisateur::create(array_merge($request->only([
-            'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
+            'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
             'dateNaissance', 'lieuNaissance', 
             'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
-            'nationalite', 'statut'
-        ]), [
-            'motDePasse' => bcrypt($request->motDePasse),
-            'nomConjoint' => $request->nomConjoint ?? null  // Add this line to ensure nomConjoint is either the provided value or null
-        ]));
+            'nationalite'
+        ]), ['motDePasse' => bcrypt($request->motDePasse)]));
 
-        $employe = Employe::create(array_merge($request->only([
-            'matricule', 'fonction', 'poste', 
-            'departement', 'situationFamille', 
-            'groupeSanguin', 'rh', 'formationScolaire',
-            'formationProfessionnelle', 'qualificationProfessionnelle', 
-            'numSecuSocial', 'serviceNational'
-        ]), ['utilisateur_id' => $utilisateur->id]));
-
-        $dossierMedical = DossierMedical::create([
-            'matricule' => $employe->matricule,
-            'aptitudeDeTravail' => 'apte', // Valeur par défaut
-            'notes' => 'Dossier médical créé',
+        // Créer le médecin
+        $medecin = Medecin::create([
+            'utilisateur_id' => $utilisateur->id,
+            'typeSpecialite_id' => $typeSpecialite->id,
+            'adresseService' => $request->adresseService,
         ]);
 
-        return response()->json(['message' => 'Employé creé avec succès.'], 201);
-        });
-    }
+        return response()->json(['message' => 'Le médecin est créé avec succès'], 201);
+    });
+}
 
     //-----------VOIR UN EMPLOYE -----------------------------------------------------------
 

@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id(); 
             $table->unsignedBigInteger('utilisateur_id');
             $table->unsignedBigInteger('typeSpecialite_id');
-            $table->string('adresseService');
+            $table->string('adresseService')->nullable();
             $table->timestamps();
             
             $table->foreign('utilisateur_id')->references('id')->on('utilisateurs')->onDelete('cascade');
@@ -22,7 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('medecin_disponibilite');
         Schema::dropIfExists('medecins'); 
     }
 };
