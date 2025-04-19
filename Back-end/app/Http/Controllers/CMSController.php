@@ -12,7 +12,7 @@ class CMSController extends Controller
     {
         $validatedData = $request->validate(['nomCMS' => 'required|string|max:255']);
         $cms = CMS::create($validatedData);
-        return response()->json(['message' => 'un nouveau centre supprimé avec succès.'], 200);
+        return response()->json(['message' => 'un nouveau centre ajouté.'], 200);
     }
 
     public function getAll(): JsonResponse

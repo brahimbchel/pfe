@@ -65,7 +65,7 @@ class MedecinController extends Controller
                 'adresseService' => $request->adresseService,
             ]);
         
-            return response()->json(['message' => 'Un est medecin créé avec succès'], 201);
+            return response()->json(['message' => 'Le medecin est créé avec succès'], 201);
     }
 
     //-----------VOIR UN MEDECIN --------------------------------------------------------
