@@ -38,6 +38,7 @@ Route::patch('visites/{id}/observations', [VisiteController::class, 'updateObser
 Route::get('medecins/{id}/historique-visites', [VisiteController::class, 'historiqueVisitesMedecin']);
 Route::get('medecins/{id}/visites-futures', [VisiteController::class, 'visitesFuturesMedecin']);
 
+
 // ----EMPLOYEES------
 Route::get('employes/{id}/historique-visites', [VisiteController::class, 'historiqueVisitesEmploye']);
 Route::get('employes/{id}/visites-futures', [VisiteController::class, 'visitesFuturesEmploye']);
@@ -58,3 +59,8 @@ Route::post('cms', [CMSController::class, 'create']);
 Route::get('cms', [CMSController::class, 'getAll']);
 Route::patch('cms/{id}', [CMSController::class, 'update']);
 Route::delete('cms/{id}', [CMSController::class, 'delete']);
+
+use App\Http\Controllers\OrientationController;
+
+// Routes pour les orientations
+Route::apiResource('orientations', OrientationController::class);

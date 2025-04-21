@@ -21,7 +21,7 @@ class Orientation extends Model
         return $this->belongsTo(employe::class, 'employe_id');
     }
 
-    public function specialite()
+    public function TypeSpecialite()
     {
         return $this->belongsTo(TypeSpecialite::class, 'specialite_id');
     }

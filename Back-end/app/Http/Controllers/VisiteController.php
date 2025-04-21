@@ -115,16 +115,18 @@ use Illuminate\Support\Facades\Validator;
                 'id' => $visite->id,
                 'dateVisite' => $visite->dateVisite,
                 'type' => $visite->type,
-                'cms_id' => $visite->cms_id,
+                'cms' => $visite->cms->nomCMS,
                 'prescriptions' => $visite->prescriptions,
                 'observations' => $visite->observations,
                 'medecin_nom' => $visite->medecin->utilisateur->nom,
                 'medecin_prenom' => $visite->medecin->utilisateur->prenom,
                 'medecin_numTelephone' => $visite->medecin->utilisateur->numTelephone,
+                'medecin_email' => $visite->medecin->utilisateur->email,
                 'specialite' => $visite->medecin->TypeSpecialite->NomSpecialite,
                 'employe_nom' => $visite->employe->utilisateur->nom,
                 'employe_prenom' => $visite->employe->utilisateur->prenom,
                 'employe_numTelephone' => $visite->employe->utilisateur->numTelephone,
+                'employe_email' => $visite->employe->utilisateur->email,
                 'employe_departement' => $visite->employe->departement,
                 'employe_poste' => $visite->employe->poste,
             ];
@@ -205,7 +207,18 @@ use Illuminate\Support\Facades\Validator;
             $visites = Visite::where('medecinId', $id)
                              ->where('dateVisite', '<', now())
                              ->get();
-            return response()->json($visites, 200);
+                             $response = $visites->map(function ($visite) {
+                                return [
+                                    'id' => $visite->id,
+                                    'dateVisite' => $visite->dateVisite,
+                                    'type' => $visite->type,
+                                    'employe_nom' => $visite->employe->utilisateur->nom,
+                                    'employe_prenom' => $visite->employe->utilisateur->prenom,
+                                ];
+                            });
+                        
+                            return response()->json($response, 200);
+        
         }
 
         public function visitesFuturesMedecin($id): JsonResponse
@@ -213,7 +226,17 @@ use Illuminate\Support\Facades\Validator;
             $visites = Visite::where('medecinId', $id)
                              ->where('dateVisite', '>=', now())
                              ->get();
-            return response()->json($visites, 200);
+                             $response = $visites->map(function ($visite) {
+                                return [
+                                    'id' => $visite->id,
+                                    'dateVisite' => $visite->dateVisite,
+                                    'type' => $visite->type,
+                                    'employe_nom' => $visite->employe->utilisateur->nom,
+                                    'employe_prenom' => $visite->employe->utilisateur->prenom
+                                ];
+                            });
+                        
+                            return response()->json($response, 200);
         }
 
         public function historiqueVisitesEmploye($id): JsonResponse
@@ -221,7 +244,18 @@ use Illuminate\Support\Facades\Validator;
             $visites = Visite::where('employeId', $id)
                              ->where('dateVisite', '<', now())
                              ->get();
-            return response()->json($visites, 200);
+                             $response = $visites->map(function ($visite) {
+                                return [
+                                    'id' => $visite->id,
+                                    'dateVisite' => $visite->dateVisite,
+                                    'type' => $visite->type,
+                                    'medecin_nom' => $visite->medecin->utilisateur->nom,
+                                    'medecin_prenom' => $visite->medecin->utilisateur->prenom,
+                                    'specialite' => $visite->medecin->TypeSpecialite->NomSpecialite,
+                                ];
+                            });
+                        
+                            return response()->json($response, 200);
         }
 
         public function visitesFuturesEmploye($id): JsonResponse
@@ -229,6 +263,17 @@ use Illuminate\Support\Facades\Validator;
             $visites = Visite::where('employeId', $id)
                              ->where('dateVisite', '>=', now())
                              ->get();
-            return response()->json($visites, 200);
+                             $response = $visites->map(function ($visite) {
+                                return [
+                                    'id' => $visite->id,
+                                    'dateVisite' => $visite->dateVisite,
+                                    'type' => $visite->type,
+                                    'medecin_nom' => $visite->medecin->utilisateur->nom,
+                                    'medecin_prenom' => $visite->medecin->utilisateur->prenom,
+                                    'specialite' => $visite->medecin->TypeSpecialite->NomSpecialite,
+                                ];
+                            });
+                        
+                            return response()->json($response, 200);
         }
 }

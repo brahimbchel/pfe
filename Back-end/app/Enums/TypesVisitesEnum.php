@@ -12,6 +12,7 @@ final class TypesVisitesEnum
      const ACCIDENT_DE_TRAVAIL = 'AccidentDeTravail';
      const CONTRE_VISITE = 'ContreVisite';
      const REINTEGRATION = 'Réintégration';
+     const AUTRE = 'Autre';
                 
     public static function getValues()
     {
@@ -24,6 +25,7 @@ final class TypesVisitesEnum
         self::ACCIDENT_DE_TRAVAIL,
         self::CONTRE_VISITE,
         self::REINTEGRATION,
+        self::AUTRE,
     ];
       }
 }
