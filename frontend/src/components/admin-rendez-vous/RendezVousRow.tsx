@@ -5,11 +5,13 @@ type RendezVous = {
   id: string;
   dateVisite: string;
   type: string;
-  cms_id: string;
   medecin_nom: string;
+  medecin_prenom: string;
   specialite: string;
   employe_nom: string;
-  matricule?: string;
+  employe_prenom: string;
+  employe_departement: string;
+  employe_poste?: string;
 };
 
 interface Props {

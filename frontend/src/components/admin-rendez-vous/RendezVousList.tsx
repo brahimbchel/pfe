@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import RendezVousRow from './RendezVousRow';
-// import RendezVousFilters from './RendezVousFilters'; // Uncomment if using filters
 
 type Visit = {
   id: string;
   dateVisite: string;
   type: string;
-  cms_id: string;
-  prescriptions?: string;
-  observations?: string;
   medecin_nom: string;
   medecin_prenom: string;
-  medecin_numTelephone: string;
   specialite: string;
   employe_nom: string;
   employe_prenom: string;
-  employe_numTelephone: string;
   employe_departement: string;
   employe_poste?: string;
 };

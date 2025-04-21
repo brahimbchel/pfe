@@ -11,7 +11,8 @@ type MedcinFormValues = {
   numTelephone: string,
   dateNaissance: string,
   lieuNaissance: string,
-  wilayaNaissance: string,
+  wilayaNaissance: string, 
+  wilaya: string,
   sexe: string,
   nationalite: string,
   typeSpecialite: string,
@@ -30,6 +31,7 @@ const medcinSchema = yup.object({
   dateNaissance: yup.string().required("est requis"),
   lieuNaissance: yup.string().required("est requis"),
   wilayaNaissance: yup.string().required("est requis"),
+  wilaya: yup.string().required("est requis"),
   nationalite: yup.string().required("est requis"),
   sexe: yup.string().required("est requis"),
 });
@@ -58,7 +60,8 @@ const MedcinsForm = () => {
 
       dateNaissance: "",
       lieuNaissance: "",
-      wilayaNaissance: "",
+      wilayaNaissance: "", 
+      wilaya: "",
       sexe: "",
       nationalite: "",
     },
@@ -66,6 +69,7 @@ const MedcinsForm = () => {
 
   const onSubmit: SubmitHandler<MedcinFormValues> = async (data) => {
     setIsSubmitting(true);
+    console.log(JSON.stringify(data))
     try {
       const response = await fetch("http://127.0.0.1:8000/api/medecins", {
         method: "POST",
@@ -266,6 +270,20 @@ const MedcinsForm = () => {
             {errors.lieuNaissance && <p className="text-red-500 text-sm mt-1">{errors.lieuNaissance.message}</p>}
         </div>
         
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+            wilaya 
+            </label>
+            <input
+              {...register("wilaya")}
+              className={`input ${errors.wilaya ? 'input-error' : ''}`}
+              placeholder="Entrez la wilaya de Naissance"
+            />
+            {errors.wilaya && <p className="text-red-500 text-sm mt-1">{errors.wilaya.message}</p>}
+        </div>
+
+        {/* wilaya */}
+
         <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
             wilaya Naissance

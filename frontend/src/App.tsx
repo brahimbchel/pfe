@@ -57,7 +57,6 @@ function App() {
           <Route path="cms" element={<CMSPage />} />
           <Route path="specialites" element={<SpecialitesPage />} />
 
-
           <Route path="rendez-vous">
             <Route index element={<RendezVous />} />
             {/* <Route path="ajoute-rendez-vous" element={<RendezVousForm />} /> */}

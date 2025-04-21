@@ -1,13 +1,12 @@
 import { PencilIcon } from "lucide-react";
 import { useState } from "react";
 
-
 type Employer = {
   id: number;
   matricule: string;
   poste: string;
   departement: string;
-  statutEmploye: string;
+  statut: string;
   nom: string;
   prenom: string;
 };
@@ -32,7 +31,7 @@ const EmployersRow: React.FC<EmployerRowProps> = ({ employer, ajouteVisite, onUp
   <td className="p-3">{employer.prenom}</td>
   <td className="p-3">{employer.poste}</td>
   <td className="p-3">{employer.departement}</td>
-  <td className="p-3"> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">{employer.statutEmploye}</span></td>
+  <td className="p-3"> <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">{employer.statut}</span></td>
       
 
       <td className="p-3 relative">
