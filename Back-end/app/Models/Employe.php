@@ -11,16 +11,13 @@ class Employe extends Utilisateur
 
     protected $fillable = [
         'matricule',
-        'fonction',
         'poste',
         'departement',
         'situationFamille',
         'groupeSanguin',
-        'rh',
+        'rh','formationScolaire',
+        'formationProfessionnelle', 'qualificationProfessionnelle',
         'serviceNational',
-        'formationScolaire',
-        'formationProfessionnelle',
-        'qualificationProfessionnelle',
         'numSecuSocial',
         'utilisateur_id',
     ];

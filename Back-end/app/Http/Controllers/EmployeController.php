@@ -8,7 +8,6 @@ use App\Models\DossierMedical;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-
 class EmployeController extends Controller
 {
 
@@ -40,45 +39,52 @@ class EmployeController extends Controller
         
     //-----------AJOUT D'UN EMPLOYE --------------------------------------------------------
 
-    public function store(Request $request)
-{
-    // Si masculin, forcer nomConjoint à null
-    if ($request->sexe === 'masculin') {
-        $request->merge(['nomConjoint' => null]);
+    public function store(Request $request): JsonResponse
+    {
+        
+        // Utiliser une transaction pour s'assurer que les deux créations réussissent ou échouent ensemble
+        return \DB::transaction(function () use ($request) 
+        {
+            // Si l'employé est masculin, forcer nomConjoint à null
+            if ($request->sexe === 'masculin') {
+                $request->merge(['nomConjoint' => null]);
+            }
+
+            // Si l'employé est féminin, vérifier que nomConjoint est présent
+            if ($request->sexe === 'féminin' && !$request->nomConjoint) {
+                return response()->json(['error' => 'Le champ nomConjoint est requis pour les employées féminines.'], 422);
+            }
+
+            // Créer l'utilisateur
+            $utilisateur = Utilisateur::create(array_merge($request->only([
+                'nom', 'nomConjoint', 'prenom', 'email', 'numTelephone', 
+                'dateNaissance', 'lieuNaissance', 
+                'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
+                'nationalite', 'statut'
+            ]), [
+                'motDePasse' => bcrypt($request->motDePasse),
+            ]));
+
+            // Créer l'employé
+            $employe = Employe::create(array_merge($request->only([
+                'matricule', 'poste', 
+                'departement', 'situationFamille', 
+                'groupeSanguin', 'rh', 
+                'formationScolaire', 'formationProfessionnelle', 
+                'qualificationProfessionnelle', 
+                'numSecuSocial', 'serviceNational'
+            ]), ['utilisateur_id' => $utilisateur->id]));
+
+            // Créer le dossier médical
+            DossierMedical::create([
+                'matricule' => $employe->matricule,
+                'aptitudeDeTravail' => 'apte', // Valeur par défaut
+                'notes' => 'Dossier médical créé',
+            ]);
+
+            return response()->json(['message' => 'Employé créé avec succès.'], 201);
+        });
     }
-
-    // Si féminin, vérifier que nomConjoint est présent
-    if ($request->sexe === 'féminin' && !$request->nomConjoint) {
-        return response()->json(['error' => 'Le champ nom de conjoint est requis pour les employées féminines.'], 422);
-    }
-
-    // Utiliser une transaction
-    return DB::transaction(function () use ($request) {
-        // Vérifier le type de spécialité
-        try {
-            $typeSpecialite = TypeSpecialite::where('NomSpecialite', $request->typeSpecialite)->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'Type de spécialité non trouvé.'], 404);
-        }
-
-        // Créer l'utilisateur
-        $utilisateur = Utilisateur::create(array_merge($request->only([
-            'nom', 'prenom', 'nomConjoint', 'email', 'numTelephone', 
-            'dateNaissance', 'lieuNaissance', 
-            'wilayaNaissance', 'adresse', 'wilaya', 'sexe', 
-            'nationalite'
-        ]), ['motDePasse' => bcrypt($request->motDePasse)]));
-
-        // Créer le médecin
-        $medecin = Medecin::create([
-            'utilisateur_id' => $utilisateur->id,
-            'typeSpecialite_id' => $typeSpecialite->id,
-            'adresseService' => $request->adresseService,
-        ]);
-
-        return response()->json(['message' => 'Le médecin est créé avec succès'], 201);
-    });
-}
 
     //-----------VOIR UN EMPLOYE -----------------------------------------------------------
 
@@ -102,7 +108,6 @@ class EmployeController extends Controller
             'wilaya' => $employe->utilisateur->wilaya,
             'sexe' => $employe->utilisateur->sexe,
             'nationalite' => $employe->utilisateur->nationalite,
-            'fonction' => $employe->fonction,
             'poste' => $employe->poste,
             'departement' => $employe->departement,
             'situationFamille' => $employe->situationFamille,
@@ -148,7 +153,7 @@ class EmployeController extends Controller
     
         // Mettre à jour les informations de l'employé
         $employe->update($request->only([
-            'matricule', 'fonction', 'poste', 
+            'matricule', 'poste', 
             'departement', 'situationFamille', 
             'groupeSanguin', 'rh', 'formationScolaire', 
             'formationProfessionnelle', 'qualificationProfessionnelle', 

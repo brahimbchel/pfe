@@ -15,13 +15,9 @@ class CreateEmployesTable extends Migration
         $table->string('numSecuSocial');
         $table->string('departement');
         $table->string('poste');
-        $table->string('fonction');
         $table->enum('groupeSanguin', ['A', 'B', 'AB', 'O']);
         $table->enum('rh', ['+','-']);
-        $table->enum('situationFamille', ['Célibataire', 'Marié', 'Séparé', 'Veuf', 'Divorcé']);
-        $table->string('formationScolaire');
-        $table->string('formationProfessionnelle');
-        $table->string('qualificationProfessionnelle');
+        $table->enum('situationFamille', ['Célibataire', 'Marié(e)', 'Séparé(e)', 'Veuf(ve)', 'Divorcé(e)']);
         $table->enum('serviceNational', ['Accompli', 'Dispensé', 'Inapte']);
         $table->timestamps();
         
