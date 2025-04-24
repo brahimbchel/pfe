@@ -1,7 +1,12 @@
+import { Outlet } from "react-router"
+import MedNavbar from "../components/medcin/MedNavBar"
 
 const MedLayout = () => {
   return (
-    <div>MedLayout</div>
+        <div>
+          <MedNavbar />
+          <Outlet />
+        </div>
   )
 }
 

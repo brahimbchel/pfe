@@ -80,6 +80,7 @@ const RendezVousList: React.FC = () => {
           </tbody>
         </table>
       </div>
+      
     </div>
   );
 };

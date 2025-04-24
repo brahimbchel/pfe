@@ -18,7 +18,7 @@ const Medcins = () => {
             to="/admin/medcin/ajoute-medcin"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
           >
-            Créer un Compte  
+            Créer un Medcin  
           </Link>
 
         </div>
